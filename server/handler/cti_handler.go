@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,13 +10,20 @@ import (
 
 // CTI注册接口(Post)
 func RegisterCtiInfo(c *gin.Context) {
-	// 解析请求参数
-	ctiTxData := &fabric.CtiTxData{}
-	if err := c.ShouldBindJSON(ctiTxData); err != nil {
+	var txMsg fabric.TxMsgData
+	//验证请求参数
+	if err := c.ShouldBindJSON(&txMsg); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	resp, err := fabric.RegisterCtiInfo(ctiTxData)
+	//重新序列化
+	txMsgData, err := json.Marshal(txMsg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	// 调用fabric注册CTI信息
+	resp, err := fabric.RegisterCtiInfo(txMsgData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -31,7 +39,7 @@ func QueryCtiInfo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	resp, err := fabric.QueryCtiInfo(ctiTxData)
+	resp, err := fabric.QueryCtiInfoByID(ctiTxData.CTIID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -39,11 +47,11 @@ func QueryCtiInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 
-// 根据ID和分页信息查询情报(Post)
-func QueryCtiInfoByIDWithPagination(c *gin.Context) {
+// 根据Type和分页信息查询情报(Post)
+func QueryCtiInfoByTypeWithPagination(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		CtiIDPrefix string `json:"cti_id_prefix"`
+		CtiType     int    `json:"cti_type"`
 		PageSize    int    `json:"page_size"`
 		Bookmark    string `json:"bookmark"`
 	}
@@ -52,7 +60,7 @@ func QueryCtiInfoByIDWithPagination(c *gin.Context) {
 		return
 	}
 
-	resp, err := fabric.QueryCtiInfoByIDWithPagination(params.CtiIDPrefix, params.PageSize, params.Bookmark)
+	resp, err := fabric.QueryCtiInfoByTypeWithPagination(params.CtiType, params.PageSize, params.Bookmark)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
