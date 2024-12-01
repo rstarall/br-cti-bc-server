@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,7 @@ func RegisterCtiInfo(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println("txMsgData:", string(txMsgData))
 	// 调用fabric注册CTI信息
 	resp, err := fabric.RegisterCtiInfo(txMsgData)
 	if err != nil {

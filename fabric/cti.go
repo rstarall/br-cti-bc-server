@@ -82,3 +82,27 @@ func QueryCtiInfoByType(ctiType int) (string, error) {
 	}
 	return string(resp), nil
 }
+
+// 分页查询所有情报信息
+func QueryAllCtiInfoWithPagination(pageSize int, bookmark string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{
+		[]byte(fmt.Sprintf("%d", pageSize)),
+		[]byte(bookmark),
+	}
+
+	// 调用链码查询所有情报
+	resp, err := InvokeChaincode(client, "cti_chaincode", "queryAllCTIInfoWithPagination", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+

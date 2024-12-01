@@ -7,12 +7,12 @@ import (
 	global "github.com/righstar2020/br-cti-bc-server/global"
 	server "github.com/righstar2020/br-cti-bc-server/server"
 )
-
+const fabric_config_path = "./config/server/config.yaml"
 func main() {
 	// 启动Fabric SDK
 	var err error
 	//该程序只能在当前工作目录下进行(子进程调用需要切换工作目录pwd)
-	global.FabricSDK, err = fabric.NewSDK("./config/config.yaml") // 确保路径正确
+	global.FabricSDK, err = fabric.NewSDK(fabric_config_path) // 确保路径正确
 	if err != nil {
 		fmt.Printf("Failed to initialize SDK: %v", err)
 	}
