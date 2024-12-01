@@ -47,3 +47,40 @@ func QueryUserInfo(userID string) (string, error) {
 	}
 	return string(resp), nil
 }
+
+func GetUserStatistics(userID string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{[]byte(userID)}
+
+	// 调用链码获取用户统计数据
+	resp, err := InvokeChaincode(client, "user_chaincode", "getUserStatistics", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+func QueryPointTransactions(userID string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{[]byte(userID)}
+
+	// 调用链码查询用户积分交易记录
+	resp, err := InvokeChaincode(client, "user_chaincode", "queryPointTransactions", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+

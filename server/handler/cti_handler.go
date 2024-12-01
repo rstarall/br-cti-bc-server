@@ -88,3 +88,58 @@ func QueryCtiInfoByType(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+
+// 分页查询所有情报信息(Post)
+func QueryAllCtiInfoWithPagination(c *gin.Context) {
+	var params struct {
+		PageSize int    `json:"page_size"`
+		Bookmark string `json:"bookmark"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := fabric.QueryAllCtiInfoWithPagination(params.PageSize, params.Bookmark)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
+
+// 根据情报哈希查询情报(Post)
+func QueryCtiInfoByCTIHash(c *gin.Context) {
+	var params struct {
+		CTIHash string `json:"cti_hash"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := fabric.QueryCtiInfoByCTIHash(params.CTIHash)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
+
+// 根据创建者ID查询情报(Post)
+func QueryCtiInfoByCreatorUserID(c *gin.Context) {
+	var params struct {
+		UserID string `json:"user_id"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := fabric.QueryCtiInfoByCreatorUserID(params.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}

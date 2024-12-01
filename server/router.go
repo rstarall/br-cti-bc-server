@@ -31,6 +31,8 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		//用户链上接口
 		userApi.POST("/registerUserAccount", handler.RegisterUserAccount)
 		userApi.POST("/queryUserInfo", handler.QueryUserInfo)
+		userApi.POST("/getUserStatistics", handler.GetUserStatistics)
+		userApi.POST("/queryPointTransactions", handler.QueryPointTransactions)
 	}
 	ctiApi := r.Group("/cti")
 	{
@@ -39,6 +41,9 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ctiApi.POST("/queryCtiInfo", handler.QueryCtiInfo)
 		ctiApi.POST("/queryCtiInfoByTypeWithPagination", handler.QueryCtiInfoByTypeWithPagination)
 		ctiApi.POST("/queryCtiInfoByType", handler.QueryCtiInfoByType)
+		ctiApi.POST("/queryAllCtiInfoWithPagination", handler.QueryAllCtiInfoWithPagination)
+		ctiApi.POST("/queryCtiInfoByCTIHash", handler.QueryCtiInfoByCTIHash)
+		ctiApi.POST("/queryCtiInfoByCreatorUserID", handler.QueryCtiInfoByCreatorUserID)
 	}
 	modelApi := r.Group("/model")
 	{
@@ -55,6 +60,11 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		//数据分析接口
 		dataStatApi.POST("/queryCTISummaryInfo", handler.QueryCTISummaryInfo)
 		dataStatApi.POST("/getDataStatistics", handler.GetDataStatistics)
+		dataStatApi.POST("/getCTITrafficTrend", handler.GetCTITrafficTrend)
+		dataStatApi.POST("/getAttackTypeRanking", handler.GetAttackTypeRanking)
+		dataStatApi.POST("/getIOCsDistribution", handler.GetIOCsDistribution)
+		dataStatApi.POST("/getGlobalIOCsDistribution", handler.GetGlobalIOCsDistribution)
+		dataStatApi.POST("/getSystemOverview", handler.GetSystemOverview)
 	}
 	return r
 }

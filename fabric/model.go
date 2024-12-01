@@ -117,3 +117,35 @@ func QueryModelInfoByCreatorUserID(userID string) (string, error) {
 	}
 	return string(resp), nil
 }
+
+// 根据用户ID查询模型
+func QueryModelsByUserID(userID string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 调用链码查询模型
+	resp, err := InvokeChaincode(client, "model_chaincode", "QueryModelsByUserID", [][]byte{[]byte(userID)})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+// 根据模型哈希查询模型
+func QueryModelInfoByModelHash(modelHash string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 调用链码查询模型
+	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelInfoByModelHash", [][]byte{[]byte(modelHash)})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}

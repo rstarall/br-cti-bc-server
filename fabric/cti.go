@@ -105,4 +105,36 @@ func QueryAllCtiInfoWithPagination(pageSize int, bookmark string) (string, error
 	return string(resp), nil
 }
 
+// 根据情报哈希查询情报
+func QueryCtiInfoByCTIHash(ctiHash string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 调用链码查询情报
+	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfoByCTIHash", [][]byte{[]byte(ctiHash)})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+// 根据创建者ID查询情报
+func QueryCtiInfoByCreatorUserID(userID string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 调用链码查询情报
+	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfoByCreatorUserID", [][]byte{[]byte(userID)})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
 

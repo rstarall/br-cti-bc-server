@@ -51,3 +51,49 @@ func QueryUserInfo(c *gin.Context) {
 		"data": resp,
 	})
 }
+
+func GetUserStatistics(c *gin.Context) {
+	// 从请求中获取参数
+	var params struct {
+		UserID string `json:"user_id"`
+	}
+
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(400, gin.H{"error": "参数错误"})
+		return
+	}
+
+	resp, err := fabric.GetUserStatistics(params.UserID)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "获取用户统计数据失败:" + err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"code": 200,
+		"data": resp,
+	})
+}
+
+func QueryPointTransactions(c *gin.Context) {
+	// 从请求中获取参数
+	var params struct {
+		UserID string `json:"user_id"`
+	}
+
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(400, gin.H{"error": "参数错误"})
+		return
+	}
+
+	resp, err := fabric.QueryPointTransactions(params.UserID)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "查询积分交易记录失败:" + err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"code": 200,
+		"data": resp,
+	})
+}
