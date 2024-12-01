@@ -2,34 +2,58 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/righstar2020/br-cti-bc-server/fabric"
+	"log"
 )
 
 // CTI注册接口(Post)
 func RegisterCtiInfo(c *gin.Context) {
-	var txMsg fabric.TxMsgData
-	//验证请求参数
-	if err := c.ShouldBindJSON(&txMsg); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var txMsg *fabric.TxMsgData
+	
+	// 记录原始请求数据
+	rawData, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "无法读取请求数据",
+			"detail": err.Error(),
+		})
 		return
 	}
-	//重新序列化
+	log.Printf("收到的原始请求数据: %s", string(rawData))
+
+	// 验证请求参数
+	if err := json.Unmarshal(rawData, &txMsg); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "JSON解析失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	// 重新序列化并打印日志
 	txMsgData, err := json.Marshal(txMsg)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "JSON序列化失败",
+			"detail": err.Error(),
+		})
 		return
 	}
-	fmt.Println("txMsgData:", string(txMsgData))
+	log.Printf("序列化后的数据: %s", string(txMsgData))
+
 	// 调用fabric注册CTI信息
 	resp, err := fabric.RegisterCtiInfo(txMsgData)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Fabric注册失败",
+			"detail": err.Error(),
+		})
 		return
 	}
+	
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 

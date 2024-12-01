@@ -11,14 +11,14 @@ import (
 func QueryCTISummaryInfo(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		CtiID string `json:"cti_id"`
+		Limit int `json:"limit"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resp, err := fabric.QueryCTISummaryInfo(params.CtiID)
+	resp, err := fabric.QueryLatestCTISummaryInfo(params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

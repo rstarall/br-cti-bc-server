@@ -8,7 +8,7 @@ type UserRegisterMsgData struct {
 //交易数据结构(需要签名的数据)
 type TxMsgData struct {
 	UserID string `json:"user_id"` //用户ID
-	TxData []byte `json:"tx_data"` //交易数据
+	TxData string `json:"tx_data"`  // 改为string类型
 	Nonce string `json:"nonce"` //随机数(base64)
 	TxSignature []byte `json:"tx_signature"` //交易签名(Base64 ASN.1 DER)
 	NonceSignature []byte `json:"nonce_signature"` //随机数签名(Base64 ASN.1 DER)

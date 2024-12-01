@@ -2,19 +2,20 @@ package fabric
 
 import (
 	"github.com/righstar2020/br-cti-bc-server/global"
+	"fmt"
 )
 
 // 数据分析合约
-// 查询情报统计信息
-func QueryCTISummaryInfo(ctiID string) (string, error) {
+// 查询最新的情报统计信息
+func QueryLatestCTISummaryInfo(limit int) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
 		return "", err
 	}
 
-	// 调用链码查询情报统计信息
-	resp, err := InvokeChaincode(client, "data_chaincode", "queryCTISummaryInfoByCTIID", [][]byte{[]byte(ctiID)})
+	// 调用链码查询最新的情报统计信息
+	resp, err := InvokeChaincode(client, "data_chaincode", "queryLatestCTISummaryInfo", [][]byte{[]byte(fmt.Sprintf("%d", limit))})
 	if err != nil {
 		return "", err
 	}
