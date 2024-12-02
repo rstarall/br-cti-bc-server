@@ -1,6 +1,7 @@
 package fabric
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/righstar2020/br-cti-bc-server/global"
@@ -14,9 +15,10 @@ func RegisterCtiInfo(txMsgData []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	//转码base64
+	sendData :=[]byte(base64.StdEncoding.EncodeToString(txMsgData))
 	// 调用链码注册情报信息
-	resp, err := InvokeChaincode(client, "cti_chaincode", "registerCtiInfo", [][]byte{txMsgData})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterCTIInfo", [][]byte{sendData})
 	if err != nil {
 		return "", err
 	}
@@ -32,7 +34,7 @@ func QueryCtiInfoByID(ctiID string) (string, error) {
 	}
 
 	// 调用链码查询情报
-	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfo", [][]byte{[]byte(ctiID)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryCTIInfo", [][]byte{[]byte(ctiID)})
 	if err != nil {
 		return "", err
 	}
@@ -55,7 +57,7 @@ func QueryCtiInfoByTypeWithPagination(ctiType int, pageSize int, bookmark string
 	}
 
 	// 调用链码查询情报
-	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfoByTypeWithPagination", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryCTIInfoByTypeWithPagination", args)
 	if err != nil {
 		return "", err
 	}
@@ -76,7 +78,7 @@ func QueryCtiInfoByType(ctiType int) (string, error) {
 	}
 
 	// 调用链码查询情报
-	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfoByType", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryCTIInfoByType", args)
 	if err != nil {
 		return "", err
 	}
@@ -98,7 +100,7 @@ func QueryAllCtiInfoWithPagination(pageSize int, bookmark string) (string, error
 	}
 
 	// 调用链码查询所有情报
-	resp, err := InvokeChaincode(client, "cti_chaincode", "queryAllCTIInfoWithPagination", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryAllCTIInfoWithPagination", args)
 	if err != nil {
 		return "", err
 	}
@@ -114,7 +116,7 @@ func QueryCtiInfoByCTIHash(ctiHash string) (string, error) {
 	}
 
 	// 调用链码查询情报
-	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfoByCTIHash", [][]byte{[]byte(ctiHash)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryCTIInfoByCTIHash", [][]byte{[]byte(ctiHash)})
 	if err != nil {
 		return "", err
 	}
@@ -130,7 +132,7 @@ func QueryCtiInfoByCreatorUserID(userID string) (string, error) {
 	}
 
 	// 调用链码查询情报
-	resp, err := InvokeChaincode(client, "cti_chaincode", "queryCTIInfoByCreatorUserID", [][]byte{[]byte(userID)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryCTIInfoByCreatorUserID", [][]byte{[]byte(userID)})
 	if err != nil {
 		return "", err
 	}

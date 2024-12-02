@@ -24,7 +24,7 @@ func RegisterModelInfo(modelTxData *ModelTxData) (string, error) {
 	}
 
 	// 调用链码注册模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "registerModelInfo", [][]byte{[]byte(msgJsonData)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterModelInfo", [][]byte{[]byte(msgJsonData)})
 	if err != nil {
 		return "", err
 	}
@@ -40,7 +40,7 @@ func QueryModelInfo(modelID string) (string, error) {
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelInfo", [][]byte{[]byte(modelID)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelInfo", [][]byte{[]byte(modelID)})
 	if err != nil {
 		return "", err
 	}
@@ -63,7 +63,7 @@ func QueryModelInfoByIDWithPagination(modelIDPrefix string, pageSize int, bookma
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelInfoByModelIDWithPagination", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelInfoByModelIDWithPagination", args)
 	if err != nil {
 		return "", err
 	}
@@ -79,7 +79,7 @@ func QueryModelsByTrafficType(trafficType string) (string, error) {
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelsByTrafficType", [][]byte{[]byte(trafficType)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelsByTrafficType", [][]byte{[]byte(trafficType)})
 	if err != nil {
 		return "", err
 	}
@@ -95,7 +95,7 @@ func QueryModelsByRefCTIId(ctiID string) (string, error) {
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelsByRefCTIId", [][]byte{[]byte(ctiID)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelsByRefCTIId", [][]byte{[]byte(ctiID)})
 	if err != nil {
 		return "", err
 	}

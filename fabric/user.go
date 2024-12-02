@@ -23,7 +23,7 @@ func RegisterUserAccount(userName string, publicKey string) (string, error) {
 		return "", err
 	}
 
-	resp, err := InvokeChaincode(client, "user_chaincode", "registerUserInfo", [][]byte{[]byte(msgJsonData)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterUserInfo", [][]byte{msgJsonData})
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +41,7 @@ func QueryUserInfo(userID string) (string, error) {
 	args := [][]byte{[]byte(userID)}
 
 	// 调用链码查询用户信息
-	resp, err := InvokeChaincode(client, "user_chaincode", "queryUserInfo", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryUserInfo", args)
 	if err != nil {
 		return "", err
 	}
@@ -59,7 +59,7 @@ func GetUserStatistics(userID string) (string, error) {
 	args := [][]byte{[]byte(userID)}
 
 	// 调用链码获取用户统计数据
-	resp, err := InvokeChaincode(client, "user_chaincode", "getUserStatistics", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetUserStatistics", args)
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +77,7 @@ func QueryPointTransactions(userID string) (string, error) {
 	args := [][]byte{[]byte(userID)}
 
 	// 调用链码查询用户积分交易记录
-	resp, err := InvokeChaincode(client, "user_chaincode", "queryPointTransactions", args)
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryPointTransactions", args)
 	if err != nil {
 		return "", err
 	}

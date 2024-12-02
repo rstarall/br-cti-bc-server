@@ -13,4 +13,5 @@ var (
 //使用一个集成的合约
 var (
 	ChaincodeName = "br-cti-contract"
+	MainChaincodeName = "main_contract"
 )

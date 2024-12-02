@@ -117,3 +117,22 @@ func QueryChainInfo(ledgerClient *ledger.Client) (string, error) {
     }
     return string(jsonStr),nil
 }
+//获取区块高度
+func GetBlockHeight(ledgerClient *ledger.Client) (int, error) {
+    jsonStr, err := QueryChainInfo(ledgerClient)
+    if err != nil {
+        return 0, err
+    }
+    blockchainInfo :=make(map[string]interface{})
+    err = json.Unmarshal([]byte(jsonStr), &blockchainInfo)
+    if err != nil {
+        return 0, err
+    }
+    if _,ok := blockchainInfo["BCI"]; ok {
+        BCI := blockchainInfo["BCI"].(map[string]interface{})
+        if height,ok := BCI["height"]; ok {
+            return int(height.(float64)), nil
+        }
+    }
+    return 0, errors.New("height is nil")
+}

@@ -3,6 +3,7 @@ package fabric
 import (
 	"github.com/righstar2020/br-cti-bc-server/global"
 	"fmt"
+	"encoding/json"
 )
 
 // 数据分析合约
@@ -15,7 +16,7 @@ func QueryLatestCTISummaryInfo(limit int) (string, error) {
 	}
 
 	// 调用链码查询最新的情报统计信息
-	resp, err := InvokeChaincode(client, "data_chaincode", "queryLatestCTISummaryInfo", [][]byte{[]byte(fmt.Sprintf("%d", limit))})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryLatestCTISummaryInfo", [][]byte{[]byte(fmt.Sprintf("%d", limit))})
 	if err != nil {
 		return "", err
 	}
@@ -31,7 +32,7 @@ func GetDataStatistics() (string, error) {
 	}
 
 	// 调用链码获取数据统计信息
-	resp, err := InvokeChaincode(client, "data_chaincode", "getDataStatistics", [][]byte{})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetDataStatistics", [][]byte{})
 	if err != nil {
 		return "", err
 	}
@@ -47,7 +48,7 @@ func GetCTITrafficTrend(timeRange string) (string, error) {
 	}
 
 	// 调用链码获取趋势数据
-	resp, err := InvokeChaincode(client, "data_chaincode", "getCTITrafficTrend", [][]byte{[]byte(timeRange)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetCTITrafficTrend", [][]byte{[]byte(timeRange)})
 	if err != nil {
 		return "", err
 	}
@@ -63,7 +64,7 @@ func GetAttackTypeRanking() (string, error) {
 	}
 
 	// 调用链码获取排行数据
-	resp, err := InvokeChaincode(client, "data_chaincode", "getAttackTypeRanking", [][]byte{})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetAttackTypeRanking", [][]byte{})
 	if err != nil {
 		return "", err
 	}
@@ -79,7 +80,7 @@ func GetIOCsDistribution() (string, error) {
 	}
 
 	// 调用链码获取分布数据
-	resp, err := InvokeChaincode(client, "data_chaincode", "getIOCsDistribution", [][]byte{})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetIOCsDistribution", [][]byte{})
 	if err != nil {
 		return "", err
 	}
@@ -95,7 +96,7 @@ func GetGlobalIOCsDistribution() (string, error) {
 	}
 
 	// 调用链码获取地理分布数据
-	resp, err := InvokeChaincode(client, "data_chaincode", "getGlobalIOCsDistribution", [][]byte{})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetGlobalIOCsDistribution", [][]byte{})
 	if err != nil {
 		return "", err
 	}
@@ -103,17 +104,29 @@ func GetGlobalIOCsDistribution() (string, error) {
 }
 
 // 获取系统概览数据
-func GetSystemOverview() (string, error) {
+func GetSystemOverview() (*SystemOverviewInfo, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// 调用链码获取系统概览数据
-	resp, err := InvokeChaincode(client, "data_chaincode", "getSystemOverview", [][]byte{})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetSystemOverview", [][]byte{})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(resp), nil
+	var SystemOverviewInfoData SystemOverviewInfo
+	err = json.Unmarshal(resp, &SystemOverviewInfoData)
+	if err != nil {
+		return nil, err
+	}
+    //更新区块高度信息
+	blockHeight, err := GetBlockHeight(global.LedgerClient)
+	if err != nil {
+		return nil, err
+	}
+
+	SystemOverviewInfoData.BlockHeight = blockHeight
+	return &SystemOverviewInfoData, nil
 }

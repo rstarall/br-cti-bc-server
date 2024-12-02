@@ -15,8 +15,8 @@ func GetTransactionNonce(userID string, txSignature []byte) (string, error) {
 
 	// 调用链码生成随机数
 	req := channel.Request{
-		ChaincodeID: "user_chaincode",
-		Fcn:         "getTransactionNonce",
+		ChaincodeID: global.MainChaincodeName,
+		Fcn:         "GetTransactionNonce",
 		Args:        [][]byte{[]byte(userID), txSignature},
 	}
 	resp, err := client.Execute(req)
