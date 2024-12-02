@@ -48,6 +48,27 @@ func QueryUserInfo(userID string) (string, error) {
 	return string(resp), nil
 }
 
+// 查询用户积分信息
+func QueryUserPointInfo(userID string) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{[]byte(userID)}
+
+	// 调用链码查询用户积分信息
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryUserPointInfo", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+
+
 func GetUserStatistics(userID string) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
