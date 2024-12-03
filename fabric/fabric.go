@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-
 	"github.com/hyperledger/fabric-protos-go/common"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
@@ -60,13 +59,12 @@ func CreateLedgerClient(sdk *fabsdk.FabricSDK) (*ledger.Client, error) {
 
 //链码执行请求
 func InvokeChaincode(channelClient *channel.Client, chaincodeName, function string, args [][]byte) ([]byte, error) {
-
     // 构建请求
     response, err := channelClient.Execute(channel.Request{
-		ChaincodeID: chaincodeName, 
-		Fcn:         function,
-		Args:        args,
-	},)
+        ChaincodeID: chaincodeName, 
+        Fcn:         function,
+        Args:        args,
+    })
     if err != nil {
         return nil, err
     }
