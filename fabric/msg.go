@@ -6,22 +6,14 @@ type UserRegisterMsgData struct {
 	PublicKey string `json:"public_key" default:""` //用户公钥(pem string)
 }
 //交易数据结构(需要签名的数据)
-type TxMsgData struct {
+type TxMsgRawData struct {
 	UserID string `json:"user_id"` //用户ID
-	TxData string `json:"tx_data"`  // 
+	TxData string `json:"tx_data"` //交易数据 base64
 	Nonce string `json:"nonce"` //随机数(base64)
-	TxSignature string `json:"tx_signature"` //交易签名(Base64 ASN.1 DER) 
+	TxSignature string`json:"tx_signature"` //交易签名(Base64 ASN.1 DER)
 	NonceSignature string `json:"nonce_signature"` //随机数签名(Base64 ASN.1 DER)
 }
 
-//发送给合约的信息
-type TxMsgDataRaw struct {
-	UserID string `json:"user_id"` //用户ID
-	TxData []byte `json:"tx_data"`  // 需要前端进行base64编码
-	Nonce string `json:"nonce"` //随机数(base64)
-	TxSignature []byte `json:"tx_signature"` //交易签名(Base64 ASN.1 DER) 需要编码
-	NonceSignature []byte `json:"nonce_signature"` //随机数签名(Base64 ASN.1 DER) 需要编码
-}
 
 
 //情报交易数据结构
@@ -41,9 +33,7 @@ type CtiTxData struct {
 	DataSize       int      `json:"data_size"`        // 数据大小（B）
 	DataHash       string   `json:"data_hash"`        // 情报数据HASH（sha256）
 	IPFSHash       string   `json:"ipfs_hash"`        // IPFS地址(STIX数据或者统计信息)
-	Need           int      `json:"need"`             // 情报需求量(销售数量)
 	Value          int      `json:"value"`            // 情报价值（积分）
-	CompreValue    int      `json:"compre_value"`     // 综合价值（积分激励算法定价）
 }
 
 type PurchaseCtiTxData struct {

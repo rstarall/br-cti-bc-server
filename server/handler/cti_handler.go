@@ -11,9 +11,9 @@ import (
 
 // CTI注册接口(Post)
 func RegisterCtiInfo(c *gin.Context) {
-	var txMsg *fabric.TxMsgData
+	var txRawMsg *fabric.TxMsgRawData
 
-	if err := c.ShouldBindJSON(&txMsg); err != nil {
+	if err := c.ShouldBindJSON(&txRawMsg); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "参数错误",
 			"detail": err.Error(),
@@ -21,20 +21,9 @@ func RegisterCtiInfo(c *gin.Context) {
 		log.Printf("参数错误: %s", err)
 		return
 	}
-	//用于检测类型
-	var ctiData fabric.CtiTxData
-	err := json.Unmarshal([]byte(txMsg.TxData), &ctiData)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "JSON反序列化失败",
-			"detail": err.Error(),
-		})
-		log.Printf("JSON反序列化失败: %s", err)
-		return
-	}
-
+	
 	// 序列化并打印日志
-	txMsgData, err := json.Marshal(txMsg)
+	txRawMsgData, err := json.Marshal(txRawMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "JSON序列化失败", 
@@ -42,14 +31,13 @@ func RegisterCtiInfo(c *gin.Context) {
 		})
 		return
 	}
-	log.Printf("序列化后的数据: %s", string(txMsgData))
+	log.Printf("序列化后的数据: %s", string(txRawMsgData))
 
 	// 调用fabric注册CTI信息
-	resp, err := fabric.RegisterCtiInfo(txMsgData)
+	resp, err := fabric.RegisterCtiInfo(txRawMsgData)
 	
 	if err != nil {
 		log.Printf("Fabric注册失败: %s", err)
-		log.Printf("Fabric注册失败: %s", resp)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Fabric注册失败",
 			"detail": err.Error(),

@@ -60,7 +60,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		//数据分析接口
 		dataStatApi.POST("/queryCTISummaryInfo", handler.QueryCTISummaryInfo)
 		dataStatApi.POST("/getDataStatistics", handler.GetDataStatistics)
-		dataStatApi.POST("/getCTITrafficTrend", handler.GetCTITrafficTrend)
+		dataStatApi.POST("/getUpchainTrend", handler.GetUpchainTrend)
 		dataStatApi.POST("/getAttackTypeRanking", handler.GetAttackTypeRanking)
 		dataStatApi.POST("/getIOCsDistribution", handler.GetIOCsDistribution)
 		dataStatApi.POST("/getGlobalIOCsDistribution", handler.GetGlobalIOCsDistribution)

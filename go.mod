@@ -1,6 +1,6 @@
 module github.com/righstar2020/br-cti-bc-server
 
-go 1.14
+go 1.13
 
 require (
 	github.com/Shopify/sarama v1.27.2 // indirect

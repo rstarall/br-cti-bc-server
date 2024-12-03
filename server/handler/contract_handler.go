@@ -45,7 +45,7 @@ func GetTransactionNonce(c *gin.Context) {
 	// 从请求中获取参数
 	var msgData struct {
 		UserID      string `json:"user_id"`
-		TxSignature []byte `json:"tx_signature"`
+		TxSignature string `json:"tx_signature"`
 	}
 
 	if err := c.ShouldBindJSON(&msgData); err != nil {

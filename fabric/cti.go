@@ -1,7 +1,6 @@
 package fabric
 
 import (
-	"encoding/base64"
 	"fmt"
 
 	"github.com/righstar2020/br-cti-bc-server/global"
@@ -9,16 +8,14 @@ import (
 
 // 情报合约
 // 注册情报
-func RegisterCtiInfo(txMsgData []byte) (string, error) {
+func RegisterCtiInfo(txRawMsgData []byte) (string, error) {
 	// 调用链码注册情报
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
 		return "", err
 	}
-	//转码base64
-	sendData :=[]byte(base64.StdEncoding.EncodeToString(txMsgData))
 	// 调用链码注册情报信息
-	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterCTIInfo", [][]byte{sendData})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterCTIInfo", [][]byte{txRawMsgData})
 	if err != nil {
 		return "", err
 	}

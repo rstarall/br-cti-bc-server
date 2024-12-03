@@ -6,7 +6,7 @@ import (
 )
 
 // 获取交易nonce
-func GetTransactionNonce(userID string, txSignature []byte) (string, error) {
+func GetTransactionNonce(userID string, txSignature string) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
@@ -17,7 +17,7 @@ func GetTransactionNonce(userID string, txSignature []byte) (string, error) {
 	req := channel.Request{
 		ChaincodeID: global.MainChaincodeName,
 		Fcn:         "GetTransactionNonce",
-		Args:        [][]byte{[]byte(userID), txSignature},
+		Args:        [][]byte{[]byte(userID), []byte(txSignature)},
 	}
 	resp, err := client.Execute(req)
 	if err != nil {

@@ -37,7 +37,7 @@ func GetDataStatistics(c *gin.Context) {
 }
 
 // 获取情报交易趋势数据(Post)
-func GetCTITrafficTrend(c *gin.Context) {
+func GetUpchainTrend(c *gin.Context) {
 	var params struct {
 		TimeRange string `json:"time_range"`
 	}
@@ -46,7 +46,7 @@ func GetCTITrafficTrend(c *gin.Context) {
 		return
 	}
 
-	resp, err := fabric.GetCTITrafficTrend(params.TimeRange)
+	resp, err := fabric.GetUpchainTrend(params.TimeRange)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

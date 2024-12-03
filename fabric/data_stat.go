@@ -39,8 +39,8 @@ func GetDataStatistics() (string, error) {
 	return string(resp), nil
 }
 
-// 获取情报交易趋势数据
-func GetCTITrafficTrend(timeRange string) (string, error) {
+// 获取上链趋势数据
+func GetUpchainTrend(timeRange string) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
@@ -48,7 +48,7 @@ func GetCTITrafficTrend(timeRange string) (string, error) {
 	}
 
 	// 调用链码获取趋势数据
-	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetCTITrafficTrend", [][]byte{[]byte(timeRange)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "GetUpchainTrend", [][]byte{[]byte(timeRange)})
 	if err != nil {
 		return "", err
 	}

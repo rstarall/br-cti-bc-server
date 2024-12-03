@@ -55,3 +55,10 @@ curl -X POST http://localhost:7777/dataStat/getAttackTypeRanking
 curl -X POST http://localhost:7777/dataStat/getIOCsDistribution
 curl -X POST http://localhost:7777/dataStat/getGlobalIOCsDistribution
 curl -X POST http://localhost:7777/dataStat/getSystemOverview
+
+
+## 运行说明
+在服务器运行时可使用端口转发
+```shell
+ssh -L 7777:localhost:7777 dev01@172.22.232.42
+```

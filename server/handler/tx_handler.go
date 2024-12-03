@@ -12,14 +12,14 @@ func GetTxNonce(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
 		UserID      string `json:"user_id"`
-		TxSignature []byte `json:"tx_signature"`
+		TxSignature string `json:"tx_signature"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	nonce, err := fabric.GetTransactionNonce(params.UserID, params.TxSignature)
+	nonce, err := fabric.GetTransactionNonce(params.UserID, string(params.TxSignature))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
