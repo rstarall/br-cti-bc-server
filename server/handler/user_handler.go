@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	fabric "github.com/righstar2020/br-cti-bc-server/fabric"
+	"log"
 	"net/http"
 )
 
@@ -24,6 +27,53 @@ func RegisterUserAccount(c *gin.Context) {
 		return
 	}
 
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
+
+// 购买情报接口(Post)
+func PurchaseCTI(c *gin.Context) {
+	var txRawMsg *fabric.TxMsgRawData
+
+	if err := c.ShouldBindJSON(&txRawMsg); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "参数错误",
+			"detail": err.Error(),
+		})
+		log.Printf("参数错误: %s", err)
+		return
+	}
+	
+	
+	
+	var purchaseCtiTxData fabric.PurchaseCtiTxData
+	if err := json.Unmarshal([]byte(txRawMsg.TxData), &purchaseCtiTxData); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "JSON反序列化失败", "detail": err.Error()})
+		return
+	}
+	base64TxData := base64.StdEncoding.EncodeToString([]byte(txRawMsg.TxData))
+	txRawMsg.TxData = base64TxData
+	// 序列化并打印日志
+	txRawMsgData, err := json.Marshal(txRawMsg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "JSON序列化失败", 
+			"detail": err.Error(),
+		})
+		return
+	}
+	log.Printf("序列化后的数据: %s", string(txRawMsgData))
+	// 调用fabric购买CTI
+	resp, err := fabric.PurchaseCTI(txRawMsgData)
+	
+	if err != nil {
+		log.Printf("Fabric购买失败: %s", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Fabric购买失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+	log.Printf("Fabric购买成功: %s", resp)
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 

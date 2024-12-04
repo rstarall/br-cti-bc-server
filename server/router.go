@@ -6,8 +6,29 @@ import (
 	handler "github.com/righstar2020/br-cti-bc-server/server/handler"
 )
 
+// 添加cors中间件函数
+func cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 	r := gin.New()
+	
+	// 使用cors中间件
+	r.Use(cors())
+	
 	blockchainApi := r.Group("/blockchain")
 	{
 		// 查询区块信息
@@ -30,6 +51,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 	{
 		//用户链上接口
 		userApi.POST("/registerUserAccount", handler.RegisterUserAccount)
+		userApi.POST("/purchaseCTI", handler.PurchaseCTI)
 		userApi.POST("/queryUserInfo", handler.QueryUserInfo)
 		userApi.POST("/getUserStatistics", handler.GetUserStatistics)
 		userApi.POST("/queryPointTransactions", handler.QueryPointTransactions)
