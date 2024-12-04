@@ -22,6 +22,24 @@ func RegisterCtiInfo(txRawMsgData []byte) (string, error) {
 	return string(resp), nil
 }
 
+//购买情报
+func PurchaseCTI(txRawMsgData []byte) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 调用链码购买情报
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "PurchaseCTI", [][]byte{txRawMsgData})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+
+
 // 查询情报
 func QueryCtiInfoByID(ctiID string) (string, error) {
 	// 创建通道客户端
