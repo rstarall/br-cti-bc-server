@@ -66,6 +66,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ctiApi.POST("/queryAllCtiInfoWithPagination", handler.QueryAllCtiInfoWithPagination)
 		ctiApi.POST("/queryCtiInfoByCTIHash", handler.QueryCtiInfoByCTIHash)
 		ctiApi.POST("/queryCtiInfoByCreatorUserID", handler.QueryCtiInfoByCreatorUserID)
+		ctiApi.POST("/queryCtiInfoByTypeWithParams", handler.QueryCtiInfoByTypeWithParams)
 	}
 	modelApi := r.Group("/model")
 	{
@@ -87,6 +88,11 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		dataStatApi.POST("/getIOCsDistribution", handler.GetIOCsDistribution)
 		dataStatApi.POST("/getGlobalIOCsDistribution", handler.GetGlobalIOCsDistribution)
 		dataStatApi.POST("/getSystemOverview", handler.GetSystemOverview)
+	}
+	ipfsApi := r.Group("/ipfs")
+	{
+		ipfsApi.POST("/getIPFSContent", handler.GetIPFSContent)
+		ipfsApi.POST("/getIPFSFileUrl", handler.GetIPFSFileUrl)
 	}
 	return r
 }

@@ -62,3 +62,11 @@ curl -X POST http://localhost:7777/dataStat/getSystemOverview
 ```shell
 ssh -L 7777:localhost:7777 dev01@172.22.232.42
 ```
+# IPFS相关
+```shell
+ssh -L 5001:localhost:5001 dev01@172.22.232.42
+ssh -L 8080:127.0.0.1:8080 dev01@172.22.232.42
+```
+### 获取IPFS内容
+curl -X POST http://localhost:7777/ipfs/getIPFSContent
+

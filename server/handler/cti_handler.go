@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"fmt"
 	
 	"log"
 	"github.com/gin-gonic/gin"
@@ -154,6 +155,32 @@ func QueryCtiInfoByCreatorUserID(c *gin.Context) {
 	}
 
 	resp, err := fabric.QueryCtiInfoByCreatorUserID(params.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
+
+// 根据Type和分页信息查询情报(路径参数)
+func QueryCtiInfoByTypeWithParams(c *gin.Context) {
+	// 从URL参数中获取参数
+	bookmark := c.Query("bookmark")
+	ctiType := c.Query("type") 
+	pageSize := c.Query("pageSize")
+
+	// 转换参数类型
+	ctiTypeInt := 0
+	if ctiType != "" {
+		fmt.Sscanf(ctiType, "%d", &ctiTypeInt)
+	}
+
+	pageSizeInt := 10 // 默认值
+	if pageSize != "" {
+		fmt.Sscanf(pageSize, "%d", &pageSizeInt) 
+	}
+
+	resp, err := fabric.QueryCtiInfoByTypeWithPagination(ctiTypeInt, pageSizeInt, bookmark)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
