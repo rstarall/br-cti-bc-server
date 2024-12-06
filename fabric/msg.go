@@ -41,17 +41,25 @@ type PurchaseCtiTxData struct {
 	UserID string `json:"user_id"` // 用户ID
 }
 
+
 //模型交易数据结构
 type ModelTxData struct {
 	ModelID          string   `json:"model_id"`           // 模型ID
 	ModelHash        string   `json:"model_hash"`         // 模型hash
 	ModelName        string   `json:"model_name"`         // 模型名称
-	ModelType        int      `json:"model_type"`         // 模型类型
-	ModelTrafficType int      `json:"model_traffic_type"` // 流量模型类型
+	ModelCreatorUserID string `json:"model_creator_user_id"` // 模型创建者ID
+	ModelDataType    int      `json:"model_data_type"`    // 模型数据类型(1:流量(数据集)、2:情报(文本))
+	ModelType        int      `json:"model_type"`         // 模型类型(1:分类模型、2:回归模型、3:聚类模型、4:NLP模型)
+	ModelAlgorithm   string   `json:"model_algorithm"`    // 模型算法
+	ModelTrainFramework string `json:"model_train_framework"` // 模型训练框架(Scikit-learn、Pytorch、TensorFlow)
 	ModelOpenSource  int      `json:"model_open_source"`  // 是否开源
 	ModelFeatures    []string `json:"model_features"`     // 模型特征
 	ModelTags        []string `json:"model_tags"`         // 模型标签
 	ModelDescription string   `json:"model_description"`  // 模型描述
-	ModelDataSize    int      `json:"model_data_size"`    // 数据大小
-	ModelIPFSHash    string   `json:"model_ipfs_hash"`    // IPFS地址
+	ModelSize        int      `json:"model_size"`         // 模型大小
+	ModelDataSize    int      `json:"model_data_size"`    // 模型训练数据大小
+	ModelDataIPFSHash string   `json:"model_data_ipfs_hash"` // 模型训练数据IPFS地址
+	ModelValue       int      `json:"model_value"`          // 模型价值
+	ModelIPFSHash    string   `json:"model_ipfs_hash"`    // 模型IPFS地址
+	RefCTIId         string   `json:"ref_cti_id"`         // 关联情报ID(使用哪个情报训练的模型)
 }

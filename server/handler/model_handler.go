@@ -12,17 +12,6 @@ import (
 // 注册模型信息(Post)
 func RegisterModelInfo(c *gin.Context) {
 	//// 解析请求参数
-	//modelTxData := &fabric.ModelTxData{}
-	//if err := c.ShouldBindJSON(modelTxData); err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	//	return
-	//}
-	//resp, err := fabric.RegisterModelInfo(modelTxData)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	//	return
-	//}
-	//c.JSON(http.StatusOK, gin.H{"result": resp})
 	var txRawMsg *fabric.TxMsgRawData
 
 	if err := c.ShouldBindJSON(&txRawMsg); err != nil {
@@ -80,19 +69,19 @@ func QueryModelInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 
-// 根据ID和分页信息查询模型(Post)
-func QueryModelInfoByIDWithPagination(c *gin.Context) {
+// 分页查询模型(Post)
+func QueryModelInfoWithPagination(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
+		Page     int    `json:"page"`
 		PageSize int    `json:"page_size"`
-		Bookmark string `json:"bookmark"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resp, err := fabric.QueryModelInfoByIDWithPagination(params.PageSize, params.Bookmark)
+	resp, err := fabric.QueryModelInfoWithPagination(params.Page, params.PageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -100,18 +89,20 @@ func QueryModelInfoByIDWithPagination(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 
-// 根据流量类型查询模型(Post)
-func QueryModelsByTrafficType(c *gin.Context) {
+// 根据类型分页查询模型(Post)
+func QueryModelsByTypeWithPagination(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		TrafficType string `json:"model_traffic_type"`
+		ModelType  int    `json:"model_type"`
+		Page       int    `json:"page"`
+		PageSize   int    `json:"page_size"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resp, err := fabric.QueryModelsByTrafficType(params.TrafficType)
+	resp, err := fabric.QueryModelsByTypeWithPagination(params.ModelType, params.Page, params.PageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

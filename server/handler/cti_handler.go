@@ -73,15 +73,15 @@ func QueryCtiInfoByTypeWithPagination(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
 		CtiType  int    `json:"cti_type"`
+		Page     int    `json:"page"`
 		PageSize int    `json:"page_size"`
-		Bookmark string `json:"bookmark"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resp, err := fabric.QueryCtiInfoByTypeWithPagination(params.CtiType, params.PageSize, params.Bookmark)
+	resp, err := fabric.QueryCtiInfoByTypeWithPagination(params.CtiType, params.Page, params.PageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -111,15 +111,16 @@ func QueryCtiInfoByType(c *gin.Context) {
 // 分页查询所有情报信息(Post)
 func QueryAllCtiInfoWithPagination(c *gin.Context) {
 	var params struct {
+		Page int 		`json:"page"`
 		PageSize int    `json:"page_size"`
-		Bookmark string `json:"bookmark"`
+		
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resp, err := fabric.QueryAllCtiInfoWithPagination(params.PageSize, params.Bookmark)
+	resp, err := fabric.QueryAllCtiInfoWithPagination(params.Page,params.PageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -166,8 +167,8 @@ func QueryCtiInfoByCreatorUserID(c *gin.Context) {
 // 根据Type和分页信息查询情报(路径参数)
 func QueryCtiInfoByTypeWithParams(c *gin.Context) {
 	// 从URL参数中获取参数
-	bookmark := c.Query("bookmark")
 	ctiType := c.Query("type") 
+	page := c.Query("page")
 	pageSize := c.Query("pageSize")
 
 	// 转换参数类型
@@ -176,12 +177,17 @@ func QueryCtiInfoByTypeWithParams(c *gin.Context) {
 		fmt.Sscanf(ctiType, "%d", &ctiTypeInt)
 	}
 
+	pageInt := 1 // 默认值
+	if page != "" {
+		fmt.Sscanf(page, "%d", &pageInt)
+	}
+
 	pageSizeInt := 10 // 默认值
 	if pageSize != "" {
 		fmt.Sscanf(pageSize, "%d", &pageSizeInt) 
 	}
 
-	resp, err := fabric.QueryCtiInfoByTypeWithPagination(ctiTypeInt, pageSizeInt, bookmark)
+	resp, err := fabric.QueryCtiInfoByTypeWithPagination(ctiTypeInt, pageInt, pageSizeInt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

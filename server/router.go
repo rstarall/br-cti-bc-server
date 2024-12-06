@@ -51,12 +51,14 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 	{
 		//用户链上接口
 		userApi.POST("/registerUserAccount", handler.RegisterUserAccount)
-		userApi.POST("/purchaseCTI", handler.PurchaseCTI)
+		userApi.POST("/purchaseCti", handler.PurchaseCTI)
+		userApi.POST("/purchaseModel", handler.PurchaseModel)
 		userApi.POST("/queryUserInfo", handler.QueryUserInfo)
 		userApi.POST("/queryUserDetailInfo", handler.QueryUserDetailInfo)
 		userApi.POST("/queryAllUserList", handler.QueryAllUserList)
 		userApi.POST("/getUserStatistics", handler.GetUserStatistics)
 		userApi.POST("/queryPointTransactions", handler.QueryPointTransactions)
+		userApi.POST("/queryUserOwnCTIInfos", handler.QueryUserOwnCTIInfos)
 	}
 	ctiApi := r.Group("/cti")
 	{
@@ -75,8 +77,8 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		//模型接口
 		modelApi.POST("/registerModelInfo", handler.RegisterModelInfo)
 		modelApi.POST("/queryModelInfo", handler.QueryModelInfo)
-		modelApi.POST("/queryModelInfoByIDWithPagination", handler.QueryModelInfoByIDWithPagination)
-		modelApi.POST("/queryModelsByTrafficType", handler.QueryModelsByTrafficType)
+		modelApi.POST("/queryModelInfoWithPagination", handler.QueryModelInfoWithPagination)
+		modelApi.POST("/queryModelsByTypeWithPagination", handler.QueryModelsByTypeWithPagination)
 		modelApi.POST("/queryModelsByRefCTIId", handler.QueryModelsByRefCTIId)
 		modelApi.POST("/queryModelInfoByCreatorUserID", handler.QueryModelInfoByCreatorUserID)
 	}
