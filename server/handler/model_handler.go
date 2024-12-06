@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,17 +11,53 @@ import (
 
 // 注册模型信息(Post)
 func RegisterModelInfo(c *gin.Context) {
-	// 解析请求参数
-	modelTxData := &fabric.ModelTxData{}
-	if err := c.ShouldBindJSON(modelTxData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//// 解析请求参数
+	//modelTxData := &fabric.ModelTxData{}
+	//if err := c.ShouldBindJSON(modelTxData); err != nil {
+	//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//	return
+	//}
+	//resp, err := fabric.RegisterModelInfo(modelTxData)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
+	//c.JSON(http.StatusOK, gin.H{"result": resp})
+	var txRawMsg *fabric.TxMsgRawData
+
+	if err := c.ShouldBindJSON(&txRawMsg); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  "参数错误",
+			"detail": err.Error(),
+		})
+		log.Printf("参数错误: %s", err)
 		return
 	}
-	resp, err := fabric.RegisterModelInfo(modelTxData)
+
+	// 序列化并打印日志
+	txRawMsgData, err := json.Marshal(txRawMsg)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "JSON序列化失败",
+			"detail": err.Error(),
+		})
 		return
 	}
+
+	log.Printf("序列化后的数据: %s", string(txRawMsgData))
+
+	// 调用fabric注册Model信息
+	resp, err := fabric.RegisterModelInfo(txRawMsgData)
+
+	if err != nil {
+		log.Printf("Fabric注册失败: %s", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "Fabric注册失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+	log.Printf("Fabric注册成功: %s", resp)
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 
@@ -46,16 +84,15 @@ func QueryModelInfo(c *gin.Context) {
 func QueryModelInfoByIDWithPagination(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		ModelIDPrefix string `json:"model_id_prefix"`
-		PageSize      int    `json:"page_size"`
-		Bookmark      string `json:"bookmark"`
+		PageSize int    `json:"page_size"`
+		Bookmark string `json:"bookmark"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resp, err := fabric.QueryModelInfoByIDWithPagination(params.ModelIDPrefix, params.PageSize, params.Bookmark)
+	resp, err := fabric.QueryModelInfoByIDWithPagination(params.PageSize, params.Bookmark)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -67,7 +104,7 @@ func QueryModelInfoByIDWithPagination(c *gin.Context) {
 func QueryModelsByTrafficType(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		TrafficType string `json:"traffic_type"`
+		TrafficType string `json:"model_traffic_type"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -1,7 +1,6 @@
 package fabric
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/righstar2020/br-cti-bc-server/global"
@@ -10,21 +9,21 @@ import (
 // 模型合约
 
 // 注册模型信息
-func RegisterModelInfo(modelTxData *ModelTxData) (string, error) {
+func RegisterModelInfo(modelTxData []byte) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
 		return "", err
 	}
 
-	// 构造注册消息数据
-	msgJsonData, err := json.Marshal(modelTxData)
-	if err != nil {
-		return "", err
-	}
+	//// 构造注册消息数据
+	//msgJsonData, err := json.Marshal(modelTxData)
+	//if err != nil {
+	//	return "", err
+	//}
 
 	// 调用链码注册模型
-	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterModelInfo", [][]byte{[]byte(msgJsonData)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "RegisterModelInfo", [][]byte{[]byte(modelTxData)})
 	if err != nil {
 		return "", err
 	}
@@ -48,7 +47,7 @@ func QueryModelInfo(modelID string) (string, error) {
 }
 
 // 根据ID和分页信息查询模型
-func QueryModelInfoByIDWithPagination(modelIDPrefix string, pageSize int, bookmark string) (string, error) {
+func QueryModelInfoByIDWithPagination(pageSize int, bookmark string) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
 	if err != nil {
@@ -57,7 +56,6 @@ func QueryModelInfoByIDWithPagination(modelIDPrefix string, pageSize int, bookma
 
 	// 构造查询参数
 	args := [][]byte{
-		[]byte(modelIDPrefix),
 		[]byte(fmt.Sprintf("%d", pageSize)),
 		[]byte(bookmark),
 	}
@@ -111,7 +109,7 @@ func QueryModelInfoByCreatorUserID(userID string) (string, error) {
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelInfoByCreatorUserID", [][]byte{[]byte(userID)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "queryModelInfoByCreatorUserID", [][]byte{[]byte(userID)})
 	if err != nil {
 		return "", err
 	}
@@ -127,7 +125,7 @@ func QueryModelsByUserID(userID string) (string, error) {
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "QueryModelsByUserID", [][]byte{[]byte(userID)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelsByUserID", [][]byte{[]byte(userID)})
 	if err != nil {
 		return "", err
 	}
@@ -143,7 +141,7 @@ func QueryModelInfoByModelHash(modelHash string) (string, error) {
 	}
 
 	// 调用链码查询模型
-	resp, err := InvokeChaincode(client, "model_chaincode", "queryModelInfoByModelHash", [][]byte{[]byte(modelHash)})
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "queryModelInfoByModelHash", [][]byte{[]byte(modelHash)})
 	if err != nil {
 		return "", err
 	}

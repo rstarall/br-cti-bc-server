@@ -44,6 +44,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ctiApi.POST("/queryAllCtiInfoWithPagination", handler.QueryAllCtiInfoWithPagination)
 		ctiApi.POST("/queryCtiInfoByCTIHash", handler.QueryCtiInfoByCTIHash)
 		ctiApi.POST("/queryCtiInfoByCreatorUserID", handler.QueryCtiInfoByCreatorUserID)
+		ctiApi.POST("/purchasecti", handler.PurchaseCTI)
 	}
 	modelApi := r.Group("/model")
 	{

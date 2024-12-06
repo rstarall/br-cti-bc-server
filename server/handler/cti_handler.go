@@ -1,12 +1,12 @@
 package handler
 
 import (
-	"encoding/json"
-	"net/http"
 	"encoding/base64"
-	"log"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/righstar2020/br-cti-bc-server/fabric"
+	"log"
+	"net/http"
 )
 
 // CTI注册接口(Post)
@@ -15,31 +15,32 @@ func RegisterCtiInfo(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&txRawMsg); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "参数错误",
+			"error":  "参数错误",
 			"detail": err.Error(),
 		})
 		log.Printf("参数错误: %s", err)
 		return
 	}
-	
+
 	// 序列化并打印日志
 	txRawMsgData, err := json.Marshal(txRawMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "JSON序列化失败", 
+			"error":  "JSON序列化失败",
 			"detail": err.Error(),
 		})
 		return
 	}
+
 	log.Printf("序列化后的数据: %s", string(txRawMsgData))
 
 	// 调用fabric注册CTI信息
 	resp, err := fabric.RegisterCtiInfo(txRawMsgData)
-	
+
 	if err != nil {
 		log.Printf("Fabric注册失败: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Fabric注册失败",
+			"error":  "Fabric注册失败",
 			"detail": err.Error(),
 		})
 		return
@@ -54,15 +55,13 @@ func PurchaseCTI(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&txRawMsg); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "参数错误",
+			"error":  "参数错误",
 			"detail": err.Error(),
 		})
 		log.Printf("参数错误: %s", err)
 		return
 	}
-	
-	
-	
+
 	var purchaseCtiTxData fabric.PurchaseCtiTxData
 	if err := json.Unmarshal([]byte(txRawMsg.TxData), &purchaseCtiTxData); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "JSON反序列化失败", "detail": err.Error()})
@@ -74,7 +73,7 @@ func PurchaseCTI(c *gin.Context) {
 	txRawMsgData, err := json.Marshal(txRawMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "JSON序列化失败", 
+			"error":  "JSON序列化失败",
 			"detail": err.Error(),
 		})
 		return
@@ -82,11 +81,11 @@ func PurchaseCTI(c *gin.Context) {
 	log.Printf("序列化后的数据: %s", string(txRawMsgData))
 	// 调用fabric购买CTI
 	resp, err := fabric.PurchaseCTI(txRawMsgData)
-	
+
 	if err != nil {
 		log.Printf("Fabric购买失败: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Fabric购买失败",
+			"error":  "Fabric购买失败",
 			"detail": err.Error(),
 		})
 		return
@@ -115,9 +114,9 @@ func QueryCtiInfo(c *gin.Context) {
 func QueryCtiInfoByTypeWithPagination(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		CtiType     int    `json:"cti_type"`
-		PageSize    int    `json:"page_size"`
-		Bookmark    string `json:"bookmark"`
+		CtiType  int    `json:"cti_type"`
+		PageSize int    `json:"page_size"`
+		Bookmark string `json:"bookmark"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
