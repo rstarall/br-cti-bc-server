@@ -85,7 +85,21 @@ func QueryUserDetailInfo(userID string) (string, error) {
 	}
 	return string(resp), nil
 }
+//查询所有用户列表
+func QueryAllUserList() (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
 
+	// 调用链码查询所有用户列表
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryUserAccountList", [][]byte{})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
 
 func GetUserStatistics(userID string) (string, error) {
 	// 创建通道客户端

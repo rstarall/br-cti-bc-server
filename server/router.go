@@ -54,6 +54,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		userApi.POST("/purchaseCTI", handler.PurchaseCTI)
 		userApi.POST("/queryUserInfo", handler.QueryUserInfo)
 		userApi.POST("/queryUserDetailInfo", handler.QueryUserDetailInfo)
+		userApi.POST("/queryAllUserList", handler.QueryAllUserList)
 		userApi.POST("/getUserStatistics", handler.GetUserStatistics)
 		userApi.POST("/queryPointTransactions", handler.QueryPointTransactions)
 	}

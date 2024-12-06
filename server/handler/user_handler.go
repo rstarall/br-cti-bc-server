@@ -116,7 +116,16 @@ func QueryUserDetailInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+//查询所有用户列表
+func QueryAllUserList(c *gin.Context) {
+	resp, err := fabric.QueryAllUserList()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "查询所有用户列表失败:" + err.Error()})
+		return
+	}
 
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
 
 
 func GetUserStatistics(c *gin.Context) {
