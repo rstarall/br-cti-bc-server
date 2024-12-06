@@ -40,7 +40,10 @@ type PurchaseCtiTxData struct {
 	CTIID string `json:"cti_id"` // 情报ID
 	UserID string `json:"user_id"` // 用户ID
 }
-
+type PurchaseModelTxData struct {
+	ModelID string `json:"model_id"` // 模型ID
+	UserID string `json:"user_id"` // 用户ID
+}
 
 //模型交易数据结构
 type ModelTxData struct {

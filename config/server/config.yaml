@@ -27,15 +27,15 @@ organizations:
     users:
       Admin:
         key:
-          path: ./config/server/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk
+          path: ./config/server/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk
         cert:
-          path: ./config/server/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+          path: ./config/server/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
     peers:
       - peer0.org1.example.com
 
   Org2:
     mspid: Org2MSP
-    cryptoPath: ./config/server/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    cryptoPath: ./config/server/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     peers:
       - peer0.org2.example.com
     certificateAuthorities:
@@ -43,11 +43,11 @@ organizations:
 
   ordererorg:
     mspID: OrdererMSP
-    cryptoPath: ./config/server/organizations/ordererOrganizations/example.com/users/Admin@example.com/msp
+    cryptoPath: ./config/server/ordererOrganizations/example.com/users/Admin@example.com/msp
 
 peers:
   peer0.org1.example.com:
-    url: grpcs://192.168.27.129:7051
+    url: grpcs://172.22.232.42:7051
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
       keep-alive-time: 10s
@@ -56,10 +56,10 @@ peers:
       fail-fast: false
       allow-insecure: true
     tlsCACerts:
-      path: ./config/server/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: ./config/server/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer0.org2.example.com:
-    url: grpcs://192.168.27.129:9051
+    url: grpcs://172.22.232.42:9051
     grpcOptions:
       ssl-target-name-override: peer0.org2.example.com
       keep-alive-time: 10s
@@ -68,11 +68,11 @@ peers:
       fail-fast: false
       allow-insecure: true
     tlsCACerts:
-      path: ./config/server/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: ./config/server/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
 orderers:
   orderer.example.com:
-    url: grpcs://192.168.27.129:7050
+    url: grpcs://172.22.232.42:7050
     grpcOptions:
       ssl-target-name-override: orderer.example.com
       keep-alive-time: 10s
@@ -81,7 +81,7 @@ orderers:
       fail-fast: false
       allow-insecure: true
     tlsCACerts:
-      path: ./config/server/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+      path: ./config/server/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
 #下面一定要配置，不然无法找到节点入口         
 entityMatchers:
@@ -89,21 +89,19 @@ entityMatchers:
     # the below matcher will allow dynamic discovery to use the anchor peer (peer0.org1.example.com)
     # as a template for all org1 discovered peers config
     - pattern: peer0.org1.example.com
-      urlsubstitutionexp: grpcs://192.168.27.129:7051
+      urlsubstitutionexp: grpcs://172.22.232.42:7051
       ssltargetoverrideurlsubstitutionexp: peer0.org1.example.com
       mappedhost: peer0.org1.example.com
 
     - pattern: peer0.org2.example.com
-      urlsubstitutionexp: grpcs://192.168.27.129:9051
+      urlsubstitutionexp: grpcs://172.22.232.42:9051
       ssltargetoverrideurlsubstitutionexp: peer0.org2.example.com
       mappedhost: peer0.org2.example.com
 
   orderer:
     - pattern: orderer.example.com
-      urlsubstitutionexp: grpcs://192.168.27.129:7050
+      urlsubstitutionexp: grpcs://172.22.232.42:7050
       ssltargetoverrideurlsubstitutionexp: orderer.example.com
       mappedhost: orderer.example.com
-
-
 
 
