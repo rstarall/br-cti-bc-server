@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	fabric "github.com/righstar2020/br-cti-bc-server/fabric"
@@ -43,16 +42,7 @@ func PurchaseCTI(c *gin.Context) {
 		return
 	}
 	
-	
-	
-	var purchaseCtiTxData fabric.PurchaseCtiTxData
-	if err := json.Unmarshal([]byte(txRawMsg.TxData), &purchaseCtiTxData); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "JSON反序列化失败", "detail": err.Error()})
-		return
-	}
-	base64TxData := base64.StdEncoding.EncodeToString([]byte(txRawMsg.TxData))
-	txRawMsg.TxData = base64TxData
-	// 序列化并打印日志
+
 	txRawMsgData, err := json.Marshal(txRawMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

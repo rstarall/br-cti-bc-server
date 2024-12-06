@@ -5,13 +5,15 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
+
 var (
-	FabricSDK *fabsdk.FabricSDK
+	FabricSDK     *fabsdk.FabricSDK
 	ChannelClient *channel.Client
-	LedgerClient *ledger.Client
+	LedgerClient  *ledger.Client
 )
+
 //使用一个集成的合约
 var (
-	ChaincodeName = "br-cti-contract"
+	ChaincodeName     = "br-cti-contract"
 	MainChaincodeName = "main_contract"
 )
