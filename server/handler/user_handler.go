@@ -96,6 +96,28 @@ func QueryUserInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+//查询用户详细信息
+func QueryUserDetailInfo(c *gin.Context) {
+	// 从请求中获取参数
+	var params struct {
+		UserID string `json:"user_id"`
+	}
+
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "参数错误"})
+		return
+	}
+
+	resp, err := fabric.QueryUserDetailInfo(params.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "查询用户详细信息失败:" + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
+
+
 
 func GetUserStatistics(c *gin.Context) {
 	// 从请求中获取参数
