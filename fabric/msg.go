@@ -20,20 +20,23 @@ type TxMsgRawData struct {
 type CtiTxData struct {
 	CTIID          string   `json:"cti_id"`           // 情报ID(链上生成)
 	CTIHash        string   `json:"cti_hash"`         // 情报HASH(sha256链下生成)
-	CTIName        string   `json:"cti_name" default:""`         // 情报名称(可为空)
-	CTIType        int      `json:"cti_type" `         // 情报类型（1:恶意流量、2:蜜罐情报、3:僵尸网络、4:应用层攻击、5:开源情报）
+	CTIName        string   `json:"cti_name"`         // 情报名称(可为空)
+	CTIType        int      `json:"cti_type"`         // 情报类型（1:恶意流量、2:蜜罐情报、3:僵尸网络、4:应用层攻击、5:开源情报）
 	CTITrafficType int      `json:"cti_traffic_type"` // 流量情报类型（0:非流量、1:5G、2:卫星网络、3:SDN）
 	OpenSource     int      `json:"open_source"`      // 是否开源（0不开源，1开源）
 	CreatorUserID  string   `json:"creator_user_id"`  // 创建者ID(公钥sha256)
 	Tags           []string `json:"tags"`             // 情报标签数组
 	IOCs           []string `json:"iocs"`             // 包含的沦陷指标（IP, Port, Payload,URL, Hash）
-	StixData       string   `json:"stix_data"`        // STIX数据（JSON）或者IPFS HASH
-	StatisticInfo  string   `json:"statistic_info"`   // 统计信息(JSON) 或者IPFS HASH
+	StatisticInfo  string  `json:"statistic_info"`   // 统计信息(JSON []byte)
+	StixData       string   `json:"stix_data"`        // STIX数据（JSON []byte）可以有多条
+	StixIPFSHash   string   `json:"stix_ipfs_hash"`   // STIX数据,IPFS地址
 	Description    string   `json:"description"`      // 情报描述
 	DataSize       int      `json:"data_size"`        // 数据大小（B）
-	DataHash       string   `json:"data_hash"`        // 情报数据HASH（sha256）
-	IPFSHash       string   `json:"ipfs_hash"`        // IPFS地址(STIX数据或者统计信息)
+	DataSourceHash string   `json:"data_source_hash"` // 数据源HASH（sha256）
+	DataSourceIPFSHash string   `json:"data_source_ipfs_hash"` // 数据源IPFS地址
+	Need           int      `json:"need"`             // 情报需求量(销售数量)
 	Value          int      `json:"value"`            // 情报价值（积分）
+	CompreValue    int      `json:"compre_value"`     // 综合价值（积分激励算法定价）
 }
 
 type PurchaseCtiTxData struct {
