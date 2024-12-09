@@ -1,43 +1,43 @@
 package fabric
+
 //数据传输结构
 //不需要签名的消息
 type UserRegisterMsgData struct {
-	UserName string `json:"user_name" default:""` //用户名称
+	UserName  string `json:"user_name" default:""`  //用户名称
 	PublicKey string `json:"public_key" default:""` //用户公钥(pem string)
 }
+
 //交易数据结构(需要签名的数据)
 type TxMsgRawData struct {
-	UserID string `json:"user_id"` //用户ID
-	TxData string `json:"tx_data"` //交易数据 base64
-	Nonce string `json:"nonce"` //随机数(base64)
-	TxSignature string`json:"tx_signature"` //交易签名(Base64 ASN.1 DER)
+	UserID         string `json:"user_id"`         //用户ID
+	TxData         string `json:"tx_data"`         //交易数据 base64
+	Nonce          string `json:"nonce"`           //随机数(base64)
+	TxSignature    string `json:"tx_signature"`    //交易签名(Base64 ASN.1 DER)
 	NonceSignature string `json:"nonce_signature"` //随机数签名(Base64 ASN.1 DER)
 }
 
-
-
 //情报交易数据结构
 type CtiTxData struct {
-	CTIID          string   `json:"cti_id"`           // 情报ID(链上生成)
-	CTIHash        string   `json:"cti_hash"`         // 情报HASH(sha256链下生成)
-	CTIName        string   `json:"cti_name" default:""`         // 情报名称(可为空)
-	CTIType        int      `json:"cti_type" `         // 情报类型（1:恶意流量、2:蜜罐情报、3:僵尸网络、4:应用层攻击、5:开源情报）
-	CTITrafficType int      `json:"cti_traffic_type"` // 流量情报类型（0:非流量、1:5G、2:卫星网络、3:SDN）
-	OpenSource     int      `json:"open_source"`      // 是否开源（0不开源，1开源）
-	CreatorUserID  string   `json:"creator_user_id"`  // 创建者ID(公钥sha256)
-	Tags           []string `json:"tags"`             // 情报标签数组
-	IOCs           []string `json:"iocs"`             // 包含的沦陷指标（IP, Port, Payload,URL, Hash）
-	StixData       string   `json:"stix_data"`        // STIX数据（JSON）或者IPFS HASH
-	StatisticInfo  string   `json:"statistic_info"`   // 统计信息(JSON) 或者IPFS HASH
-	Description    string   `json:"description"`      // 情报描述
-	DataSize       int      `json:"data_size"`        // 数据大小（B）
-	DataHash       string   `json:"data_hash"`        // 情报数据HASH（sha256）
-	IPFSHash       string   `json:"ipfs_hash"`        // IPFS地址(STIX数据或者统计信息)
-	Value          int      `json:"value"`            // 情报价值（积分）
+	CTIID          string   `json:"cti_id"`              // 情报ID(链上生成)
+	CTIHash        string   `json:"cti_hash"`            // 情报HASH(sha256链下生成)
+	CTIName        string   `json:"cti_name" default:""` // 情报名称(可为空)
+	CTIType        int      `json:"cti_type" `           // 情报类型（1:恶意流量、2:蜜罐情报、3:僵尸网络、4:应用层攻击、5:开源情报）
+	CTITrafficType int      `json:"cti_traffic_type"`    // 流量情报类型（0:非流量、1:5G、2:卫星网络、3:SDN）
+	OpenSource     int      `json:"open_source"`         // 是否开源（0不开源，1开源）
+	CreatorUserID  string   `json:"creator_user_id"`     // 创建者ID(公钥sha256)
+	Tags           []string `json:"tags"`                // 情报标签数组
+	IOCs           []string `json:"iocs"`                // 包含的沦陷指标（IP, Port, Payload,URL, Hash）
+	StixData       string   `json:"stix_data"`           // STIX数据（JSON）或者IPFS HASH
+	StatisticInfo  string   `json:"statistic_info"`      // 统计信息(JSON) 或者IPFS HASH
+	Description    string   `json:"description"`         // 情报描述
+	DataSize       int      `json:"data_size"`           // 数据大小（B）
+	DataHash       string   `json:"data_hash"`           // 情报数据HASH（sha256）
+	IPFSHash       string   `json:"ipfs_hash"`           // IPFS地址(STIX数据或者统计信息)
+	Value          int      `json:"value"`               // 情报价值（积分）
 }
 
 type PurchaseCtiTxData struct {
-	CTIID string `json:"cti_id"` // 情报ID
+	CTIID  string `json:"cti_id"`  // 情报ID
 	UserID string `json:"user_id"` // 用户ID
 }
 
@@ -54,4 +54,9 @@ type ModelTxData struct {
 	ModelDescription string   `json:"model_description"`  // 模型描述
 	ModelDataSize    int      `json:"model_data_size"`    // 数据大小
 	ModelIPFSHash    string   `json:"model_ipfs_hash"`    // IPFS地址
+}
+
+type PurchaseModelTxData struct {
+	ModelID string `json:"model_id"` // 情报ID
+	UserID  string `json:"user_id"`  // 用户ID
 }
