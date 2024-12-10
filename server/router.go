@@ -56,6 +56,8 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		modelApi.POST("/queryModelsByRefCTIId", handler.QueryModelsByRefCTIId)
 		modelApi.POST("/queryModelInfoByCreatorUserID", handler.QueryModelInfoByCreatorUserID)
 		modelApi.POST("/purchaseModel", handler.PurchaseModel)
+		modelApi.POST("/queryModelsByTypeWithPagination", handler.QueryModelsByTypeWithPagination)
+		modelApi.POST("/queryAllModelInfoWithPagination", handler.QueryAllModelInfoWithPagination)
 	}
 	dataStatApi := r.Group("/dataStat")
 	{

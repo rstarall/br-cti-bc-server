@@ -202,3 +202,43 @@ func PurchaseModel(c *gin.Context) {
 	log.Printf("Fabric购买成功: %s", resp)
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+
+// 根据type和分页信息查询模型(Post)
+func QueryModelsByTypeWithPagination(c *gin.Context) {
+	// 解析请求参数
+	var params struct {
+		ModelType int `json:"model_type"`
+		Page      int `json:"page"`
+		PageSize  int `json:"page_size"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := fabric.QueryModelsByTypeWithPagination(params.ModelType, params.Page, params.PageSize)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
+
+// 分页查询所有情报信息(Post)
+func QueryAllModelInfoWithPagination(c *gin.Context) {
+	var params struct {
+		Page     int `json:"page"`
+		PageSize int `json:"page_size"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := fabric.QueryAllModelInfoWithPagination(params.Page, params.PageSize)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
