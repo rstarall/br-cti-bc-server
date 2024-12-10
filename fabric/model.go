@@ -126,6 +126,22 @@ func QueryModelInfoByCreatorUserID(userID string) (string, error) {
 	return string(resp), nil
 }
 
+//购买情报
+func PurchaseModel(txRawMsgData []byte) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 调用链码购买情报
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "PurchaseModel", [][]byte{txRawMsgData})
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
 // 根据用户ID查询模型
 func QueryModelsByUserID(userID string) (string, error) {
 	// 创建通道客户端
@@ -158,7 +174,6 @@ func QueryModelInfoByModelHash(modelHash string) (string, error) {
 	return string(resp), nil
 }
 
-// 根据类型分页查询模型
 func QueryModelsByTypeWithPagination(modelType int, page int, pageSize int) (string, error) {
 	// 创建通道客户端
 	client, err := CreateChannelClient(global.FabricSDK)
@@ -175,6 +190,27 @@ func QueryModelsByTypeWithPagination(modelType int, page int, pageSize int) (str
 
 	// 调用链码查询模型
 	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelsByTypeWithPagination", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+
+func QueryAllModelInfoWithPagination(page int, pageSize int) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{
+		[]byte(fmt.Sprintf("%d", page)),
+		[]byte(fmt.Sprintf("%d", pageSize)),
+	}
+
+	// 调用链码查询所有情报
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryAllModelInfoWithPagination", args)
 	if err != nil {
 		return "", err
 	}

@@ -7,7 +7,9 @@ import (
 	global "github.com/righstar2020/br-cti-bc-server/global"
 	server "github.com/righstar2020/br-cti-bc-server/server"
 )
-const fabric_config_path = "./config/server/config.yaml"
+
+const fabric_config_path = "./config/server/local_config.yaml"
+
 func main() {
 	// 启动Fabric SDK
 	var err error

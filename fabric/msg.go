@@ -1,20 +1,20 @@
 package fabric
+
 //数据传输结构
 //不需要签名的消息
 type UserRegisterMsgData struct {
-	UserName string `json:"user_name" default:""` //用户名称
+	UserName  string `json:"user_name" default:""`  //用户名称
 	PublicKey string `json:"public_key" default:""` //用户公钥(pem string)
 }
+
 //交易数据结构(需要签名的数据)
 type TxMsgRawData struct {
-	UserID string `json:"user_id"` //用户ID
-	TxData string `json:"tx_data"` //交易数据 base64
-	Nonce string `json:"nonce"` //随机数(base64)
-	TxSignature string`json:"tx_signature"` //交易签名(Base64 ASN.1 DER)
+	UserID         string `json:"user_id"`         //用户ID
+	TxData         string `json:"tx_data"`         //交易数据 base64
+	Nonce          string `json:"nonce"`           //随机数(base64)
+	TxSignature    string `json:"tx_signature"`    //交易签名(Base64 ASN.1 DER)
 	NonceSignature string `json:"nonce_signature"` //随机数签名(Base64 ASN.1 DER)
 }
-
-
 
 //情报交易数据结构
 type CtiTxData struct {
@@ -40,7 +40,7 @@ type CtiTxData struct {
 }
 
 type PurchaseCtiTxData struct {
-	CTIID string `json:"cti_id"` // 情报ID
+	CTIID  string `json:"cti_id"`  // 情报ID
 	UserID string `json:"user_id"` // 用户ID
 }
 type PurchaseModelTxData struct {
