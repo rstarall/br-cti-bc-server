@@ -69,4 +69,6 @@ ssh -L 8080:127.0.0.1:8080 dev01@172.22.232.42
 ```
 ### 获取IPFS内容
 curl -X POST http://localhost:7777/ipfs/getIPFSContent
-
+curl -X get http://localhost:7777/ipfs/getIPFSContent?hash=Qmc4R6bLJoRjYjGaU6cu1CbJqJS5avhecEHT2fBXxP343U
+直链
+http://127.0.0.1:8080/ipfs/Qmc4R6bLJoRjYjGaU6cu1CbJqJS5avhecEHT2fBXxP343U

@@ -12,17 +12,20 @@ import (
 func GetIPFSContent(c *gin.Context) {
 	// 解析请求参数
 	var params struct {
-		Hash string `json:"hash" binding:"required"`
+		Hash string `json:"hash" binding:"required" form:"hash"`
 	}
 
+	// 尝试获取POST JSON参数
 	if err := c.ShouldBindJSON(&params); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "参数错误",
-			"detail": err.Error(),
-		})
-		return
+		// JSON解析失败,尝试获取GET/POST表单参数
+		if err := c.ShouldBind(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "参数错误",
+				"detail": err.Error(),
+			})
+			return
+		}
 	}
-
 	// 调用IPFS服务获取内容
 	url,content, err := ipfs.GetIPFSContentWithFallback(params.Hash)
 	if err != nil {

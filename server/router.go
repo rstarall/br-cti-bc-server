@@ -97,7 +97,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 	}
 	ipfsApi := r.Group("/ipfs")
 	{
-		ipfsApi.POST("/getIPFSContent", handler.GetIPFSContent)
+		ipfsApi.Any("/getIPFSContent", handler.GetIPFSContent)
 		ipfsApi.POST("/getIPFSFileUrl", handler.GetIPFSFileUrl)
 	}
 	return r
