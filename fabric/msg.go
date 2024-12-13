@@ -27,7 +27,7 @@ type CtiTxData struct {
 	CreatorUserID  string   `json:"creator_user_id"`  // 创建者ID(公钥sha256)
 	Tags           []string `json:"tags"`             // 情报标签数组
 	IOCs           []string `json:"iocs"`             // 包含的沦陷指标（IP, Port, Payload,URL, Hash）
-	StatisticInfo  string  `json:"statistic_info"`   // 统计信息(JSON []byte)
+	StatisticInfo  string  `json:"statistic_info"`   // 统计信息(IPFS地址)
 	StixData       string   `json:"stix_data"`        // STIX数据（JSON []byte）可以有多条
 	StixIPFSHash   string   `json:"stix_ipfs_hash"`   // STIX数据,IPFS地址
 	Description    string   `json:"description"`      // 情报描述
