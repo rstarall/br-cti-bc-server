@@ -25,10 +25,10 @@ func cors() gin.HandlerFunc {
 
 func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 	r := gin.New()
-	
+
 	// 使用cors中间件
 	r.Use(cors())
-	
+
 	blockchainApi := r.Group("/blockchain")
 	{
 		// 查询区块信息
@@ -99,6 +99,10 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 	{
 		ipfsApi.Any("/getIPFSContent", handler.GetIPFSContent)
 		ipfsApi.POST("/getIPFSFileUrl", handler.GetIPFSFileUrl)
+		ipfsApi.POST("/processIOCWorldMapStatistics", handler.ProcessIOCWorldMapStatistics)
+		ipfsApi.POST("/saveIOCWorldMapStatistics", handler.SaveIOCWorldMapStatisticsHandler)
+		//ipfsApi.POST("/getIOCWorldMapStatistics", handler.GetIOCWorldMapStatistics)
+		ipfsApi.POST("/downipfsfile", handler.DownloadFileHandler)
 	}
 	return r
 }
