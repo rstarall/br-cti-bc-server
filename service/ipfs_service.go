@@ -13,9 +13,11 @@ func (s *IPFSService) GetIOCFileFromIPFS(IPFSHash string) (string, error) {
 //----------------------------------IOC地理位置信息------------------------------------
 func (s *IPFSService) ProcessIOCWorldMapStatistics(iocData string) (string, error) {
 	// 处理IOC世界地图统计数据
+	//统计精确到country和region的IOC数量
 }
 func (s *IPFSService) SaveIOCWorldMapStatistics(iocData string) (string, error) {
 	// 保存IOC世界地图统计数据(保存在数据库或文件中)
+	//记录每个地区的IOC总数量
 }
 func (s *IPFSService) GetIOCWorldMapStatistics() (string, error) {
 	// 获取IOC世界地图统计数据
