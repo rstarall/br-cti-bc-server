@@ -43,7 +43,7 @@ func GetIPFSContentFromNode(hash string, nodeAddr string) (string, []byte, error
 	return resp.Request.URL.String(), content, nil
 }
 
-var nodeAddrs = []string{
+var NodeAddrs = []string{
 	"http://127.0.0.1:8080",
 	// "https://ipfs.io",
 	// "https://dweb.link",
@@ -55,7 +55,7 @@ func GetIPFSContentWithFallback(hash string) (string, []byte, error) {
 	var lastErr error
 
 	// 依次尝试所有节点
-	for _, nodeAddr := range nodeAddrs {
+	for _, nodeAddr := range NodeAddrs {
 		url, content, err := GetIPFSContentFromNode(hash, nodeAddr)
 		if err == nil {
 			return url, content, nil
@@ -66,6 +66,5 @@ func GetIPFSContentWithFallback(hash string) (string, []byte, error) {
 	return "", nil, fmt.Errorf("所有节点均访问失败，最后错误: %v", lastErr)
 }
 func GetIPFSServerHost() string {
-	return nodeAddrs[0]
+	return NodeAddrs[0]
 }
-   

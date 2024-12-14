@@ -17,3 +17,5 @@ var (
 	ChaincodeName     = "br-cti-contract"
 	MainChaincodeName = "main_contract"
 )
+
+type StatsMap map[string]map[string]int

@@ -1,1 +1,14 @@
-{}
+{
+  "BR": {
+    "São Paulo": 2
+  },
+  "CN": {
+    "Shanghai": 2
+  },
+  "IT": {
+    "Lazio": 2
+  },
+  "JP": {
+    "Tokyo": 2
+  }
+}
