@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/righstar2020/br-cti-bc-server/ipfs"
-	ipfss "github.com/righstar2020/br-cti-bc-server/service"
+	ipfsService "github.com/righstar2020/br-cti-bc-server/service"
 	"net/http"
 )
 
@@ -83,7 +83,7 @@ func ProcessIOCWorldMapStatistics(c *gin.Context) {
 	}
 
 	// 调用 IPFSService 处理 IOC 数据
-	ipfsService := ipfss.NewIPFSService(nodeAddrs, "download")
+	ipfsService := ipfsService.GetIPFSServiceInstance()
 	stats, err := ipfsService.ProcessIOCWorldMapStatistics(params.IOCData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -101,7 +101,7 @@ func ProcessIOCWorldMapStatistics(c *gin.Context) {
 
 func GetIOCWorldMapStatisticsHandler(c *gin.Context) {
 	// 获取统计数据
-	stats, err := ipfss.NewIPFSService(nodeAddrs, "download").GetIOCWorldMapStatistics()
+	stats, err := ipfsService.GetIPFSServiceInstance().GetIOCWorldMapStatistics()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":  "获取统计数据失败",

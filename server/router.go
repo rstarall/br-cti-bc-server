@@ -84,6 +84,21 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		modelApi.POST("/purchaseModel", handler.PurchaseModel)
 		modelApi.POST("/queryAllModelInfoWithPagination", handler.QueryAllModelInfoWithPagination)
 	}
+	commentApi := r.Group("/comment")
+	{
+		//评论接口
+		commentApi.POST("/registerComment", handler.RegisterComment)
+		commentApi.POST("/approveComment", handler.ApproveComment)
+		commentApi.POST("/queryComment", handler.QueryComment)
+		commentApi.POST("/queryAllCommentsByRefID", handler.QueryAllCommentsByRefID)
+		commentApi.POST("/queryCommentsByRefID", handler.QueryCommentsByRefID)
+	}
+	incentiveApi := r.Group("/incentive")
+	{
+		//文档激励接口
+		incentiveApi.POST("/registerDocIncentiveInfo", handler.RegisterDocIncentiveInfo)
+		incentiveApi.POST("/queryDocIncentiveInfo", handler.QueryDocIncentiveInfo)
+	}
 	dataStatApi := r.Group("/dataStat")
 	{
 		//数据分析接口
@@ -100,7 +115,6 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ipfsApi.Any("/getIPFSContent", handler.GetIPFSContent)
 		ipfsApi.POST("/getIPFSFileUrl", handler.GetIPFSFileUrl)
 		ipfsApi.POST("/processIOCWorldMapStatistics", handler.ProcessIOCWorldMapStatistics)
-		//ipfsApi.POST("/saveIOCWorldMapStatistics", handler.SaveIOCWorldMapStatisticsHandler)
 		ipfsApi.POST("/getIOCWorldMapStatistics", handler.GetIOCWorldMapStatisticsHandler)
 		ipfsApi.POST("/downipfsfile", handler.DownloadFileHandler)
 	}

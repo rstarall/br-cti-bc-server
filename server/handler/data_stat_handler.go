@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/righstar2020/br-cti-bc-server/fabric"
+	ipfsService "github.com/righstar2020/br-cti-bc-server/service"
 )
 
 // 查询情报统计信息
@@ -76,7 +77,8 @@ func GetIOCsDistribution(c *gin.Context) {
 
 // 获取全球IOCs地理分布(Post)
 func GetGlobalIOCsDistribution(c *gin.Context) {
-	resp, err := fabric.GetGlobalIOCsDistribution()
+	// 获取IPFS服务
+	resp, err := ipfsService.GetIPFSServiceInstance().GetIOCWorldMapStatistics()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
