@@ -201,3 +201,26 @@ func QueryAllModelInfoWithPagination(page int, pageSize int) (string, error) {
 	}
 	return string(resp), nil
 }
+// 根据激励机制分页查询模型信息
+func QueryModelsByIncentiveMechanismWithPagination(page int, pageSize int, incentiveMechanism int) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{
+		[]byte(fmt.Sprintf("%d", page)),
+		[]byte(fmt.Sprintf("%d", pageSize)),
+		[]byte(fmt.Sprintf("%d", incentiveMechanism)),
+	}
+
+	// 调用链码查询模型
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryModelsByIncentiveMechanismWithPagination", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
+

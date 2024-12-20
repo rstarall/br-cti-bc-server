@@ -146,6 +146,28 @@ func QueryAllCtiInfoWithPagination(page int, pageSize int) (string, error) {
 	}
 	return string(resp), nil
 }
+// 根据激励机制分页查询情报信息
+func QueryCtiInfoByIncentiveMechanismWithPagination(page int, pageSize int, incentiveMechanism int) (string, error) {
+	// 创建通道客户端
+	client, err := CreateChannelClient(global.FabricSDK)
+	if err != nil {
+		return "", err
+	}
+
+	// 构造查询参数
+	args := [][]byte{
+		[]byte(fmt.Sprintf("%d", page)),
+		[]byte(fmt.Sprintf("%d", pageSize)), 
+		[]byte(fmt.Sprintf("%d", incentiveMechanism)),
+	}
+
+	// 调用链码查询情报
+	resp, err := InvokeChaincode(client, global.MainChaincodeName, "QueryCTIInfoByIncentiveMechanismWithPagination", args)
+	if err != nil {
+		return "", err
+	}
+	return string(resp), nil
+}
 
 // 根据情报哈希查询情报
 func QueryCtiInfoByCTIHash(ctiHash string) (string, error) {

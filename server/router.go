@@ -71,6 +71,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ctiApi.POST("/queryCtiInfoByCTIHash", handler.QueryCtiInfoByCTIHash)
 		ctiApi.POST("/queryCtiInfoByCreatorUserID", handler.QueryCtiInfoByCreatorUserID)
 		ctiApi.POST("/queryCtiInfoByTypeWithParams", handler.QueryCtiInfoByTypeWithParams)
+		ctiApi.POST("/queryCtiInfoByIncentiveMechanismWithPagination", handler.QueryCtiInfoByIncentiveMechanismWithPagination)
 	}
 	modelApi := r.Group("/model")
 	{
@@ -83,6 +84,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		modelApi.POST("/queryModelInfoByCreatorUserID", handler.QueryModelInfoByCreatorUserID)
 		modelApi.POST("/purchaseModel", handler.PurchaseModel)
 		modelApi.POST("/queryAllModelInfoWithPagination", handler.QueryAllModelInfoWithPagination)
+		modelApi.POST("/queryModelsByIncentiveMechanismWithPagination", handler.QueryModelsByIncentiveMechanismWithPagination)
 	}
 	commentApi := r.Group("/comment")
 	{

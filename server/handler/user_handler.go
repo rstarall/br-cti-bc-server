@@ -6,6 +6,7 @@ import (
 	fabric "github.com/righstar2020/br-cti-bc-server/fabric"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func RegisterUserAccount(c *gin.Context) {
@@ -57,6 +58,13 @@ func PurchaseCTI(c *gin.Context) {
 	
 	if err != nil {
 		log.Printf("Fabric购买失败: %s", err)
+		if strings.Contains(err.Error(), "insufficient points for purchase") {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "积分不足",
+				"detail": err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Fabric购买失败",
 			"detail": err.Error(),
@@ -94,6 +102,13 @@ func PurchaseModel(c *gin.Context) {
 	
 	if err != nil {
 		log.Printf("Fabric购买失败: %s", err)
+		if strings.Contains(err.Error(), "insufficient points for purchase") {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "积分不足",
+				"detail": err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Fabric购买失败",
 			"detail": err.Error(),

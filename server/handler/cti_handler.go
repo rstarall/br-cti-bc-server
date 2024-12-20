@@ -85,7 +85,25 @@ func QueryCtiInfoByTypeWithPagination(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+// 根据激励机制分页查询情报信息
+func QueryCtiInfoByIncentiveMechanismWithPagination(c *gin.Context) {
+	var params struct {
+		Page     int `json:"page"`
+		PageSize int `json:"page_size"`
+		IncentiveMechanism int `json:"incentive_mechanism"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
+	resp, err := fabric.QueryCtiInfoByIncentiveMechanismWithPagination(params.Page, params.PageSize, params.IncentiveMechanism)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}
 // 根据类型查询情报(Post)
 func QueryCtiInfoByType(c *gin.Context) {
 	// 解析请求参数

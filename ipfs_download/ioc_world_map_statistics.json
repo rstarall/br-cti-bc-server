@@ -1,46 +1,49 @@
 {
   "AU": {
-    "New South Wales": 10242
+    "New South Wales": 2432
   },
   "BR": {
-    "São Paulo": 53416
+    "São Paulo": 131632
   },
   "CA": {
-    "Ontario": 2320
+    "Ontario": 92
   },
   "CN": {
-    "Beijing": 20,
-    "Guangdong": 8224,
-    "Shanghai": 516
+    "Beijing": 327680,
+    "Guangdong": 266,
+    "Shanghai": 110604
   },
   "DE": {
-    "Berlin": 2080
+    "Berlin": 16400
   },
   "ES": {
-    "Madrid": 1580
+    "Madrid": 64
   },
   "FR": {
-    "Île-de-France": 81952
+    "Île-de-France": 9282
   },
   "GB": {
-    "England": 4864
+    "England": 268288
   },
   "IN": {
-    "Maharashtra": 18434
+    "Maharashtra": 624192
   },
   "IT": {
-    "Lazio": 20480
+    "Lazio": 9304
   },
   "JP": {
-    "Tokyo": 33284
+    "Tokyo": 53248
   },
   "KR": {
-    "Seoul": 1024
+    "Seoul": 34368
+  },
+  "RU": {
+    "Moscow": 196608
   },
   "SG": {
-    "Singapore": 512
+    "Singapore": 266400
   },
   "US": {
-    "California": 304
+    "California": 262656
   }
 }
