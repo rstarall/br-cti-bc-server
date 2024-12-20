@@ -25,7 +25,7 @@ func RegisterDocIncentiveInfo(c *gin.Context) {
 	txRawMsgData, err := json.Marshal(txRawMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":  "JSON序列化失败", 
+			"error":  "JSON序列化失败",
 			"detail": err.Error(),
 		})
 		return
@@ -47,8 +47,8 @@ func RegisterDocIncentiveInfo(c *gin.Context) {
 // 查询文档激励信息
 func QueryDocIncentiveInfo(c *gin.Context) {
 	var params struct {
-		RefID   string `json:"ref_id"`
-		DocType string `json:"doc_type"`
+		RefID   string `json:"refen_id"`
+		DocType string `json:"doctype"`
 	}
 
 	if err := c.ShouldBindJSON(&params); err != nil {

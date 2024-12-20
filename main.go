@@ -11,7 +11,7 @@ import (
 	"github.com/righstar2020/br-cti-bc-server/service"
 )
 
-const fabric_config_path = "./config/server/config.yaml"
+const fabric_config_path = "./config/server/local_config.yaml"
 
 func main() {
 	// 启动Fabric SDK

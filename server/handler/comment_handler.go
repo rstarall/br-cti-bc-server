@@ -79,13 +79,18 @@ func ApproveComment(c *gin.Context) {
 
 // 查询单个评论
 func QueryComment(c *gin.Context) {
-	commentID := c.Query("comment_id")
-	if commentID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "评论ID不能为空"})
+	var params struct {
+		CommetnID string `json:"comment_id"`
+	}
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  "参数错误",
+			"detail": err.Error(),
+		})
 		return
 	}
 
-	resp, err := fabric.QueryComment(commentID)
+	resp, err := fabric.QueryComment(params.CommetnID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -93,6 +98,7 @@ func QueryComment(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+
 // 查询指定文档的评论列表
 func QueryAllCommentsByRefID(c *gin.Context) {
 	var params struct {
@@ -118,6 +124,7 @@ func QueryAllCommentsByRefID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+
 // 分页查询评论列表
 func QueryCommentsByRefID(c *gin.Context) {
 	var params struct {
