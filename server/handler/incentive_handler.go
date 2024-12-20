@@ -64,3 +64,26 @@ func QueryDocIncentiveInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
+
+// 分页查询文档激励信息
+func QueryDocIncentiveInfoWithPagination(c *gin.Context) {
+	var params struct {
+		RefID   string `json:"ref_id"`
+		DocType string `json:"doc_type"`
+		Page     int `json:"page"`
+		PageSize int `json:"page_size"`
+	}
+
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := fabric.QueryDocIncentiveInfoWithPagination(params.RefID, params.DocType, params.Page, params.PageSize)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"result": resp})
+}

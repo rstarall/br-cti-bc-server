@@ -98,6 +98,7 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		//文档激励接口
 		incentiveApi.POST("/registerDocIncentiveInfo", handler.RegisterDocIncentiveInfo)
 		incentiveApi.POST("/queryDocIncentiveInfo", handler.QueryDocIncentiveInfo)
+		incentiveApi.POST("/queryDocIncentiveInfoWithPagination", handler.QueryDocIncentiveInfoWithPagination)
 	}
 	dataStatApi := r.Group("/dataStat")
 	{

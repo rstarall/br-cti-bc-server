@@ -40,7 +40,7 @@ func RegisterComment(c *gin.Context) {
 		})
 		return
 	}
-
+	log.Printf("注册评论成功: %s", resp)
 	c.JSON(http.StatusOK, gin.H{"result": resp})
 }
 
