@@ -1,0 +1,13 @@
+[
+  {
+    "time": "2024-12-21 17:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 4,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 4
+    }
+  }
+]

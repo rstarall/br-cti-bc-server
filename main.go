@@ -61,7 +61,7 @@ func StartScheduledTasks() {
 		select {
 		case <-ticker.C:
 			// 获取统计信息
-			stats, err := service.NewIPFSService(ipfs.NodeAddrs, "download").GetIOCWorldMapStatistics()
+			stats, err := service.NewIPFSService(ipfs.NodeAddrs, "download", "stats_db").GetIOCWorldMapStatistics()
 			if err != nil {
 				fmt.Printf("Error getting IOC World Map Statistics: %v\n", err)
 				continue

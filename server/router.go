@@ -121,5 +121,12 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ipfsApi.POST("/getIOCWorldMapStatistics", handler.GetIOCWorldMapStatisticsHandler)
 		ipfsApi.POST("/downipfsfile", handler.DownloadFileHandler)
 	}
+	kpApi := r.Group("/kp")
+	{
+		kpApi.Any("/queryIOCGeoDistribution", handler.QueryIOCGeoDistribution)
+		kpApi.Any("/queryIOCTypeDistribution", handler.QueryIOCTypeDistribution)
+		kpApi.Any("/queryAttackTypeStatistics", handler.QueryAttackTypeStatistics)
+		kpApi.Any("/queryAttackIOCInfo", handler.QueryAttackIOCInfo)
+	}
 	return r
 }

@@ -56,6 +56,11 @@ curl -X POST http://localhost:7777/dataStat/getIOCsDistribution
 curl -X POST http://localhost:7777/dataStat/getGlobalIOCsDistribution
 curl -X POST http://localhost:7777/dataStat/getSystemOverview
 
+# 知识平面相关(kp)接口
+curl -X POST http://localhost:7777/kp/queryIOCGeoDistribution # 查询IOC地理分布
+curl -X POST http://localhost:7777/kp/queryIOCTypeDistribution # 查询IOC类型分布
+curl -X POST http://localhost:7777/kp/queryAttackTypeStatistics # 查询攻击类型统计
+curl -X POST http://localhost:7777/kp/queryAttackIOCInfo # 查询攻击IOC信息
 
 ## 运行说明
 在服务器运行时可使用端口转发

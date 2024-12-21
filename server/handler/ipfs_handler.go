@@ -94,9 +94,7 @@ func ProcessIOCWorldMapStatistics(c *gin.Context) {
 	}
 
 	// 返回生成的统计信息和保存路径
-	c.JSON(http.StatusOK, gin.H{
-		"statistics": stats,
-	})
+	c.JSON(http.StatusOK, gin.H{"result": stats})
 }
 
 func GetIOCWorldMapStatisticsHandler(c *gin.Context) {
@@ -111,9 +109,7 @@ func GetIOCWorldMapStatisticsHandler(c *gin.Context) {
 	}
 
 	// 返回统计数据
-	c.JSON(http.StatusOK, gin.H{
-		"statistics": stats,
-	})
+	c.JSON(http.StatusOK, gin.H{"result": stats})
 }
 
 // DownloadFileHandler 处理从 IPFS 下载文件并提供给浏览器下载
