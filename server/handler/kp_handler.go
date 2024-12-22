@@ -71,3 +71,34 @@ func QueryAttackIOCInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"result": infos})
 }
+
+
+// 查询流量场景类型比例
+func QueryTrafficTypeRatio(c *gin.Context) {
+	stats, err := ipfsService.GetIPFSServiceInstance().GetTrafficTypeStatistics()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "查询流量场景类型比例失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"result": stats})
+}
+
+// 查询流量场景数量时序信息
+func QueryTrafficTimeSeries(c *gin.Context) {
+	series, err := ipfsService.GetIPFSServiceInstance().GetTrafficTimeSeries()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "查询流量场景数量时序信息失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"result": series})
+}
+
+

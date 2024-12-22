@@ -1,33 +1,31 @@
 package service
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/righstar2020/br-cti-bc-server/ipfs"
-	"github.com/righstar2020/br-cti-bc-server/util"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sync"
-	"encoding/base64"
 	"strings"
+	"sync"
 	"time"
-	
+
+	"github.com/righstar2020/br-cti-bc-server/ipfs"
+	"github.com/righstar2020/br-cti-bc-server/util"
 )
-
-
 
 // IOCWorldMapStats 定义统计数据的类型(国家-城市-数量)
 type IOCWorldStatsMap map[string]map[string]int
 
 // IPFSService 提供处理 IPFS 内容的服务
 type IPFSService struct {
-	mu          sync.RWMutex
-	iocWorldStatsMap    IOCWorldStatsMap
+	mu                    sync.RWMutex
+	iocWorldStatsMap      IOCWorldStatsMap
 	iocWorldStatsFilePath string // 添加 statsFilePath 字段
-	ipfsNodes   []string
-	statsFilePath string // 添加 statsFilePath 字段
-	downloadDir string // 添加 downloadDir 字段
+	ipfsNodes             []string
+	statsFilePath         string // 添加 statsFilePath 字段
+	downloadDir           string // 添加 downloadDir 字段
 }
 
 var nodeAddrs = []string{
@@ -57,24 +55,31 @@ func GetIPFSServiceInstance() *IPFSService {
 				fmt.Printf("创建stats_db目录失败: %v", err)
 			}
 		}
-		
-		IPFSServiceInstance = NewIPFSService(nodeAddrs, ipfsDownloadDir,statsDbDir)
+
+		IPFSServiceInstance = NewIPFSService(nodeAddrs, ipfsDownloadDir, statsDbDir)
+
+		// 从文件中加载已有的统计信息
+		stats, err := IPFSServiceInstance.loadExistingStats(IPFSServiceInstance.iocWorldStatsFilePath)
+		if err != nil {
+			fmt.Printf("加载已有统计信息失败: %v", err)
+		}
+		IPFSServiceInstance.iocWorldStatsMap = stats
 	}
-	return 	IPFSServiceInstance	
+	return IPFSServiceInstance
 }
 
 // NewIPFSService 创建一个新的 IPFSService实例
-func NewIPFSService(ipfsNodes []string, downloadDir string,statsFilePath string) *IPFSService {
+func NewIPFSService(ipfsNodes []string, downloadDir string, statsFilePath string) *IPFSService {
 	return &IPFSService{
-		iocWorldStatsMap:    make(IOCWorldStatsMap),
+		iocWorldStatsMap:      make(IOCWorldStatsMap),
 		iocWorldStatsFilePath: filepath.Join(statsFilePath, "ioc_world_map_statistics.json"),
-		ipfsNodes:   ipfsNodes,
-		downloadDir: downloadDir, // 初始化 downloadDir
-		statsFilePath: statsFilePath, // 初始化 statsFilePath
+		ipfsNodes:             ipfsNodes,
+		downloadDir:           downloadDir,   // 初始化 downloadDir
+		statsFilePath:         statsFilePath, // 初始化 statsFilePath
 	}
 }
 
-func (s *IPFSService) DownloadIPFSFile(hash string) (string,string, error) {
+func (s *IPFSService) DownloadIPFSFile(hash string) (string, string, error) {
 	// 获取 IPFS 内容
 	_, rawContent, err := ipfs.GetIPFSContentWithFallback(hash)
 	if rawContent == nil {
@@ -86,7 +91,7 @@ func (s *IPFSService) DownloadIPFSFile(hash string) (string,string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	
+
 	// 创建保存文件的目录（例如 ./downloads）
 	if err := os.MkdirAll(s.downloadDir, os.ModePerm); err != nil {
 		return "", content, fmt.Errorf("创建下载目录失败: %v", err)
@@ -104,9 +109,10 @@ func (s *IPFSService) DownloadIPFSFile(hash string) (string,string, error) {
 
 	return filePath, content, nil
 }
-//----------------------------------处理IPFS信息---------------------------------------
+
+// ----------------------------------处理IPFS信息---------------------------------------
 func (s *IPFSService) ProcessCtiRegisterDataStatistics(TxDataString string) (string, error) {
-	
+
 	//base64解码
 	decodedTxData, err := base64.StdEncoding.DecodeString(TxDataString)
 	if err != nil {
@@ -130,15 +136,20 @@ func (s *IPFSService) ProcessCtiRegisterDataStatistics(TxDataString string) (str
 		return "", fmt.Errorf("从 IPFS 获取内容失败: %v", err)
 	}
 
-	
 	//1.更新地理位置统计信息(异步)
 	go func() {
-		s.ProcessIOCWorldMapStatistics(string(content))
+		_, err := s.ProcessIOCWorldMapStatistics(string(content))
+		if err != nil {
+			fmt.Printf("处理世界地图统计信息失败: %v", err)
+			s.mu.Unlock()
+			return
+		}
 
 		// 确保 stats 不是空的
 		if len(s.iocWorldStatsMap) == 0 {
 			fmt.Printf("处理后的统计信息为空")
 		}
+		// UpdateIOCWorldMapStatistics 方法内部已经有锁保护
 		s.UpdateIOCWorldMapStatistics()
 	}()
 	//2.更新IOC类型统计信息(异步)
@@ -159,49 +170,39 @@ func (s *IPFSService) ProcessCtiRegisterDataStatistics(TxDataString string) (str
 	}()
 	//4.更新攻击IOC信息(异步)
 	go func() {
-		attackIOCInfo, err := s.ProcessAttackIOCInfo(string(content),&ctiTxData)
+		attackIOCInfo, err := s.ProcessAttackIOCInfo(string(content), &ctiTxData)
 		if err != nil {
 			fmt.Printf("处理攻击IOC信息失败: %v", err)
 		}
 		s.SaveAttackIOCInfo(attackIOCInfo)
 	}()
-
+	//5.更新流量场景比例信息(异步)
+	go func() {
+		trafficTypeStats, err := s.ProcessTrafficTypeStatistics(&ctiTxData)
+		if err != nil {
+			fmt.Printf("处理流量场景比例信息失败: %v", err)
+		}
+		s.SaveTrafficTypeStatistics(trafficTypeStats)
+	}()
+	//6.更新流量场景数量时序信息(异步)
+	go func() {
+		trafficTimeSeriesData, err := s.ProcessTrafficTimeSeries(&ctiTxData)
+		if err != nil {
+			fmt.Printf("处理流量场景数量时序信息失败: %v", err)
+		}
+		s.SaveTrafficTimeSeries(trafficTimeSeriesData)
+	}()
 	return ctiTxData.StatisticInfo, nil
 }
-//-------------------------1.更新IOC世界地图统计信息--------------------------------
+
+// -------------------------1.更新IOC世界地图统计信息--------------------------------
 func (s *IPFSService) UpdateIOCWorldMapStatistics() (string, error) {
 	//线程安全
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	// 打印日志以调试
-	fmt.Printf("处理后的统计信息: %v\n", s.iocWorldStatsMap)
-	existingStats := s.iocWorldStatsMap
-	if len(s.iocWorldStatsMap) == 0 {
-		fmt.Println("处理后的统计信息为空")
-		// 加载已有的统计信息
-		loadExistingStats, err := s.loadExistingStats(s.iocWorldStatsFilePath)
-		if err != nil {
-			return "", fmt.Errorf("加载已有统计信息失败: %v", err)
-		}
-		existingStats = loadExistingStats
-	}
-	
 
-	// 累加新的统计信息
-	for country, cityMap := range s.iocWorldStatsMap {
-		if existingCityMap, exists := existingStats[country]; exists {
-			// 如果该国家已经有统计信息，进行累加
-			for city, count := range cityMap {
-				existingCityMap[city] += count
-			}
-		} else {
-			// 如果该国家没有统计信息，直接添加
-			existingStats[country] = cityMap
-		}
-	}
-
-	// 将累加后的统计信息保存到文件
-	savePath, err := s.SaveIOCWorldMapStatistics(existingStats)
+	// 保存统计信息
+	savePath, err := s.SaveIOCWorldMapStatistics(s.iocWorldStatsMap)
 	if err != nil {
 		return "", fmt.Errorf("保存统计信息失败: %v", err)
 	}
@@ -213,7 +214,7 @@ func (s *IPFSService) UpdateIOCWorldMapStatistics() (string, error) {
 // loadExistingStats 从文件中加载已有的统计信息
 func (s *IPFSService) loadExistingStats(filePath string) (IOCWorldStatsMap, error) {
 	// 读取已有的统计信息文件
-	
+
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		// 如果文件不存在，返回空的统计数据
@@ -228,7 +229,7 @@ func (s *IPFSService) loadExistingStats(filePath string) (IOCWorldStatsMap, erro
 	if err := json.Unmarshal(data, &stats); err != nil {
 		return nil, fmt.Errorf("解析已有统计信息失败: %v", err)
 	}
-
+	fmt.Printf("加载已有统计信息: %v\n", stats)
 	return stats, nil
 }
 
@@ -241,9 +242,9 @@ func (s *IPFSService) ProcessIOCWorldMapStatistics(iocData string) (IOCWorldStat
 		return nil, fmt.Errorf("解析 IOC 数据失败: %v", err)
 	}
 
+	// 使用局部变量存储新的统计数据
 	localStats := make(IOCWorldStatsMap)
 
-	// 示例处理逻辑，根据您的具体数据结构调整
 	if ipsInfo, exists := data["ips_locations_info_map"].(map[string]interface{}); exists {
 		for _, locInfo := range ipsInfo {
 			locMap, ok := locInfo.(map[string]interface{})
@@ -266,6 +267,7 @@ func (s *IPFSService) ProcessIOCWorldMapStatistics(iocData string) (IOCWorldStat
 
 	//线程安全
 	s.mu.Lock()
+	fmt.Printf("s的统计信息: %v\n", s.iocWorldStatsMap)
 	defer s.mu.Unlock()
 	for country, regions := range localStats {
 		if _, exists := s.iocWorldStatsMap[country]; !exists {
@@ -280,7 +282,7 @@ func (s *IPFSService) ProcessIOCWorldMapStatistics(iocData string) (IOCWorldStat
 }
 
 func (s *IPFSService) SaveIOCWorldMapStatistics(iocData IOCWorldStatsMap) (string, error) {
-	
+
 	// 数据检查
 	if len(iocData) == 0 {
 		return "", fmt.Errorf("统计数据为空，无法保存")
@@ -306,42 +308,35 @@ func (s *IPFSService) SaveIOCWorldMapStatistics(iocData IOCWorldStatsMap) (strin
 	return savePath, nil
 }
 func (s *IPFSService) GetIOCWorldMapStatistics() (IOCWorldStatsMap, error) {
-	var iocWorldStatsMap IOCWorldStatsMap
-	//线程安全
 	s.mu.Lock()
 	defer s.mu.Unlock()
-     //先从内存中读取
+	//先从内存中读取
 	if len(s.iocWorldStatsMap) == 0 {
-		 fmt.Println("内存中统计信息为空")
-		 //否则从文件读取内容
-		content, err := ioutil.ReadFile(s.iocWorldStatsFilePath)
+		fmt.Println("内存中统计信息为空")
+		//否则从文件读取内容
+		iocWorldStatsMap, err := s.loadExistingStats(s.iocWorldStatsFilePath)
 		if err != nil {
 			return nil, fmt.Errorf("读取统计数据文件失败: %v", err)
 		}
-		//将文件内容转换为IOCWorldStatsMap
-		if err := json.Unmarshal(content, &iocWorldStatsMap); err != nil {
-			return nil, fmt.Errorf("解析统计数据文件失败: %v", err)
-		}
-		
 		s.iocWorldStatsMap = iocWorldStatsMap
 	}
-	
+
 	return s.iocWorldStatsMap, nil
 }
 
-//-------------------------------------2.IOC类型分布-------------------------------------
+// -------------------------------------2.IOC类型分布-------------------------------------
 // IOCTypeStats 定义IOC类型统计数据结构
 type IOCTypeStats struct {
-	IPCount     int `json:"ip_count"`
-	PortCount   int `json:"port_count"`
+	IPCount      int `json:"ip_count"`
+	PortCount    int `json:"port_count"`
 	PayloadCount int `json:"payload_count"`
-	URLCount    int `json:"url_count"`
-	HashCount   int `json:"hash_count"`
+	URLCount     int `json:"url_count"`
+	HashCount    int `json:"hash_count"`
 }
 
 // ProcessIOCTypeStatistics 处理IOC类型分布统计
 func (s *IPFSService) ProcessIOCTypeStatistics(ctiData *CtiTxData) (*IOCTypeStats, error) {
-	
+
 	// 获取历史统计数据
 	existingStats := &IOCTypeStats{}
 	savePath := filepath.Join(s.statsFilePath, "ioc_type_statistics.json")
@@ -410,7 +405,7 @@ func (s *IPFSService) GetIOCTypeStatistics() (*IOCTypeStats, error) {
 	return &stats, nil
 }
 
-//-------------------------------------3.攻击类型统计-------------------------------------
+// -------------------------------------3.攻击类型统计-------------------------------------
 // AttackTypeStats 定义攻击类型统计数据结构
 type AttackTypeStats struct {
 	MaliciousTraffic int `json:"malicious_traffic"` // 恶意流量
@@ -420,9 +415,10 @@ type AttackTypeStats struct {
 	OpenSourceInfo   int `json:"open_source_info"`  // 开源情报
 	Total            int `json:"total"`             // 总量
 }
-//定义时序数据结构
+
+// 定义时序数据结构
 type AttackTypeTimeSeriesData struct {
-	Time string `json:"time"` // 小时时间戳,格式为"2006-01-02 15:00:00"
+	Time  string          `json:"time"`  // 小时时间戳,格式为"2006-01-02 15:00:00"
 	Stats AttackTypeStats `json:"stats"` // 统计数据
 }
 
@@ -431,7 +427,7 @@ func (s *IPFSService) ProcessAttackTypeStatistics(ctiData *CtiTxData) ([]*Attack
 	// 从文件中读取现有统计数据
 	savePath := filepath.Join(s.statsFilePath, "attack_type_statistics.json")
 	var timeSeriesData []*AttackTypeTimeSeriesData
-	
+
 	content, err := ioutil.ReadFile(savePath)
 	if err == nil {
 		if err := json.Unmarshal(content, &timeSeriesData); err != nil {
@@ -441,7 +437,7 @@ func (s *IPFSService) ProcessAttackTypeStatistics(ctiData *CtiTxData) ([]*Attack
 
 	// 获取当前小时时间戳
 	currentHour := time.Now().Format("2006-01-02 15:00:00")
-	
+
 	// 查找当前小时的统计数据
 	var currentStats *AttackTypeTimeSeriesData
 	for _, data := range timeSeriesData {
@@ -454,7 +450,7 @@ func (s *IPFSService) ProcessAttackTypeStatistics(ctiData *CtiTxData) ([]*Attack
 	// 如果当前小时没有数据,创建新的统计数据
 	if currentStats == nil {
 		currentStats = &AttackTypeTimeSeriesData{
-			Time: currentHour,
+			Time:  currentHour,
 			Stats: AttackTypeStats{},
 		}
 		timeSeriesData = append(timeSeriesData, currentStats)
@@ -509,17 +505,17 @@ func (s *IPFSService) GetAttackTypeStatistics() ([]*AttackTypeTimeSeriesData, er
 	return stats, nil
 }
 
-//-------------------------------------4.攻击IOC信息-------------------------------------
+// -------------------------------------4.攻击IOC信息-------------------------------------
 // AttackIOCInfo 定义攻击IOC信息结构
 type AttackIOCInfo struct {
-	IPAddress     string `json:"ip_address"`      // IP地址
-	Location     string `json:"location"`   // 地理位置
-	AttackType    string `json:"attack_type"`     // 攻击类型
-	Port          string    `json:"port"`            // 端口
-	Hash          string `json:"hash"`            // HASH
+	IPAddress  string `json:"ip_address"`  // IP地址
+	Location   string `json:"location"`    // 地理位置
+	AttackType string `json:"attack_type"` // 攻击类型
+	Port       string `json:"port"`        // 端口
+	Hash       string `json:"hash"`        // HASH
 }
 
-//获取攻击类型
+// 获取攻击类型
 func (s *IPFSService) GetAttackType(ctiType int) string {
 	mapAttackType := map[int]string{
 		1: "恶意流量",
@@ -532,11 +528,11 @@ func (s *IPFSService) GetAttackType(ctiType int) string {
 }
 
 // ProcessAttackIOCInfo 处理攻击IOC信息
-func (s *IPFSService) ProcessAttackIOCInfo(iocData string,ctiTxData *CtiTxData) ([]*AttackIOCInfo, error) {
+func (s *IPFSService) ProcessAttackIOCInfo(iocData string, ctiTxData *CtiTxData) ([]*AttackIOCInfo, error) {
 	// 先从文件中读取现有数据
 	savePath := filepath.Join(s.statsFilePath, "attack_ioc_info.json")
 	var existingInfos []*AttackIOCInfo
-	
+
 	content, err := ioutil.ReadFile(savePath)
 	if err == nil {
 		if err := json.Unmarshal(content, &existingInfos); err != nil {
@@ -569,7 +565,7 @@ func (s *IPFSService) ProcessAttackIOCInfo(iocData string,ctiTxData *CtiTxData) 
 				//根据ctiTxData的CTIType设置攻击类型
 				if attackType, ok := infoMap["attack_type"].(string); ok {
 					iocInfo.AttackType = attackType
-				} else { 
+				} else {
 					iocInfo.AttackType = s.GetAttackType(int(ctiTxData.CTIType))
 				}
 
@@ -621,3 +617,145 @@ func (s *IPFSService) GetAttackIOCInfo() ([]AttackIOCInfo, error) {
 	return infos, nil
 }
 
+//----------------------------------5.traffic 流量场景比例信息------------------------------------
+type TrafficTypeStats struct {
+	NonTrafficCount   int `json:"non_traffic_count"`   // 非流量数量
+	SatelliteCount    int `json:"satellite_count"`      // 卫星网络数量
+	FiveGCount        int `json:"five_g_count"`        // 5G数量
+	SDNCount          int `json:"sdn_count"`            // SDN数量
+}
+// ProcessTrafficTypeStatistics 处理流量场景比例信息
+func (s *IPFSService) ProcessTrafficTypeStatistics(ctiData *CtiTxData) (*TrafficTypeStats, error) {
+	stats,err := s.GetTrafficTypeStatistics()
+	if err != nil {
+		return nil, fmt.Errorf("获取流量场景比例信息失败: %v", err)
+	}
+	trafficType := ctiData.CTITrafficType
+	// 根据CTI数据更新流量场景比例信息
+	switch trafficType {
+		case 0:
+			stats.NonTrafficCount++
+		case 1:
+			stats.FiveGCount++
+		case 2:
+			stats.SatelliteCount++
+		case 3:
+			stats.SDNCount++
+	}
+
+	return stats, nil
+}
+// SaveTrafficTypeStatistics 保存流量场景比例信息
+func (s *IPFSService) SaveTrafficTypeStatistics(stats *TrafficTypeStats) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	statsJSON, err := json.MarshalIndent(stats, "", "  ")
+	if err != nil {
+		return fmt.Errorf("生成流量场景比例信息JSON失败: %v", err)
+	}
+
+	savePath := filepath.Join(s.statsFilePath, "traffic_type_stats.json")
+	if err := ioutil.WriteFile(savePath, statsJSON, 0644); err != nil {
+		return fmt.Errorf("保存流量场景比例信息失败: %v", err)
+	}
+	fmt.Printf("流量场景比例信息已保存至: %s\n", savePath)
+	return nil
+}
+
+// GetTrafficTypeStatistics 获取流量场景比例信息
+func (s *IPFSService) GetTrafficTypeStatistics() (*TrafficTypeStats, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	savePath := filepath.Join(s.statsFilePath, "traffic_type_stats.json")
+	content, err := ioutil.ReadFile(savePath)
+	if err != nil {
+		fmt.Printf("读取流量场景比例信息失败: %v", err)
+		return &TrafficTypeStats{}, nil
+	}
+
+	var stats TrafficTypeStats
+	if err := json.Unmarshal(content, &stats); err != nil {
+		fmt.Printf("解析流量场景比例信息失败: %v", err)
+		return &TrafficTypeStats{}, nil
+	}
+
+	return &stats, nil
+}
+
+//----------------------------------6.traffic 流量场景数量时序信息------------------------------------
+type TrafficTimeSeries struct {
+	Timestamp string `json:"timestamp"` // 时间戳
+	TrafficTypeData map[int]int `json:"data"` // 流量类型（0:非流量、1:5G、2:卫星网络、3:SDN）
+	Total int `json:"total"` // 总量
+}
+
+// ProcessTrafficTimeSeries 处理流量场景数量时序信息
+func (s *IPFSService) ProcessTrafficTimeSeries(ctiData *CtiTxData) ([]TrafficTimeSeries, error) {
+	timeSeries, err := s.GetTrafficTimeSeries()
+	if err != nil {
+		return nil, fmt.Errorf("获取流量场景数量时序信息失败: %v", err)
+	}
+	currentTime := time.Now().Format("2006-01-02 15:00:00")
+	var currentStats *TrafficTimeSeries
+
+	for _, data := range timeSeries {
+		if data.Timestamp == currentTime {
+			currentStats = &data
+			break
+		}
+	}
+
+	// 如果当前小时没有数据,创建新的统计数据
+	if currentStats == nil {
+		currentStats = &TrafficTimeSeries{
+			Timestamp:     currentTime,
+			TrafficTypeData: make(map[int]int),
+		}
+		timeSeries = append(timeSeries, *currentStats)
+	}
+
+	currentStats.TrafficTypeData[ctiData.CTITrafficType]++
+	//计算总和
+	totalCount := 0
+	for _, count := range currentStats.TrafficTypeData {
+		totalCount += count
+	}
+	currentStats.Total = totalCount
+	return timeSeries, nil
+}
+// SaveTrafficTimeSeries 保存流量场景数量时序信息
+func (s *IPFSService) SaveTrafficTimeSeries(series []TrafficTimeSeries) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	seriesJSON, err := json.MarshalIndent(series, "", "  ")
+	if err != nil {
+		return fmt.Errorf("生成流量场景数量时序信息JSON失败: %v", err)
+	}
+
+	savePath := filepath.Join(s.statsFilePath, "traffic_time_series.json")
+	if err := ioutil.WriteFile(savePath, seriesJSON, 0644); err != nil {
+		return fmt.Errorf("保存流量场景数量时序信息失败: %v", err)
+	}
+	fmt.Printf("流量场景数量时序信息已保存至: %s\n", savePath)
+	return nil
+}
+
+// GetTrafficTimeSeries 获取流量场景数量时序信息
+func (s *IPFSService) GetTrafficTimeSeries() ([]TrafficTimeSeries, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	savePath := filepath.Join(s.statsFilePath, "traffic_time_series.json")
+	content, err := ioutil.ReadFile(savePath)
+	if err != nil {
+		fmt.Printf("读取流量场景数量时序信息失败: %v", err)
+		return []TrafficTimeSeries{}, nil
+	}
+
+	var series []TrafficTimeSeries
+	if err := json.Unmarshal(content, &series); err != nil {
+		fmt.Printf("解析流量场景数量时序信息失败: %v", err)
+		return []TrafficTimeSeries{}, nil
+	}
+
+	return series, nil
+}

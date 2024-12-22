@@ -127,6 +127,9 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		kpApi.Any("/queryIOCTypeDistribution", handler.QueryIOCTypeDistribution)
 		kpApi.Any("/queryAttackTypeStatistics", handler.QueryAttackTypeStatistics)
 		kpApi.Any("/queryAttackIOCInfo", handler.QueryAttackIOCInfo)
+		//-------- 流量场景统计信息-------------------------------
+		kpApi.Any("/queryTrafficTypeRatio", handler.QueryTrafficTypeRatio)
+		kpApi.Any("/queryTrafficTimeSeries", handler.QueryTrafficTimeSeries)
 	}
 	return r
 }

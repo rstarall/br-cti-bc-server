@@ -9,5 +9,38 @@
       "open_source_info": 0,
       "total": 4
     }
+  },
+  {
+    "time": "2024-12-22 13:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 0,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 18,
+      "total": 18
+    }
+  },
+  {
+    "time": "2024-12-22 14:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 18,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 18
+    }
+  },
+  {
+    "time": "2024-12-22 15:00:00",
+    "stats": {
+      "malicious_traffic": 21,
+      "honeypot_info": 54,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 75
+    }
   }
 ]
