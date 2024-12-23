@@ -42,5 +42,27 @@
       "open_source_info": 0,
       "total": 75
     }
+  },
+  {
+    "time": "2024-12-23 12:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 19,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 19
+    }
+  },
+  {
+    "time": "2024-12-23 13:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 6,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 6
+    }
   }
 ]
