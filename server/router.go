@@ -119,7 +119,8 @@ func NewRouter(fabricSDK *fabsdk.FabricSDK) *gin.Engine {
 		ipfsApi.POST("/getIPFSFileUrl", handler.GetIPFSFileUrl)
 		ipfsApi.POST("/processIOCWorldMapStatistics", handler.ProcessIOCWorldMapStatistics)
 		ipfsApi.POST("/getIOCWorldMapStatistics", handler.GetIOCWorldMapStatisticsHandler)
-		ipfsApi.POST("/downipfsfile", handler.DownloadFileHandler)
+		ipfsApi.POST("/downloadIPFSFile", handler.DownloadFileHandler)
+		ipfsApi.POST("/downloadIPFSFileToPath", handler.DownloadFileToPathHandler)
 	}
 	kpApi := r.Group("/kp")
 	{

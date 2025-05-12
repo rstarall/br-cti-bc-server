@@ -64,5 +64,82 @@
       "open_source_info": 0,
       "total": 6
     }
+  },
+  {
+    "time": "2025-01-04 16:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 1,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 1
+    }
+  },
+  {
+    "time": "2025-03-13 16:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 7,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 7
+    }
+  },
+  {
+    "time": "2025-04-30 16:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 13,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 13
+    }
+  },
+  {
+    "time": "2025-05-05 20:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 3,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 3
+    }
+  },
+  {
+    "time": "2025-05-06 14:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 1,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 1
+    }
+  },
+  {
+    "time": "2025-05-06 16:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 7,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 7
+    }
+  },
+  {
+    "time": "2025-05-11 18:00:00",
+    "stats": {
+      "malicious_traffic": 0,
+      "honeypot_info": 41,
+      "botnet": 0,
+      "app_layer_attack": 0,
+      "open_source_info": 0,
+      "total": 41
+    }
   }
 ]

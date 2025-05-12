@@ -1,0 +1,66 @@
+{
+    "type": "observed-data",
+    "spec_version": "2.1",
+    "id": "observed-data--c786ef15-d166-43fe-a7f7-1174184391f9",
+    "created": "2025-04-30T08:54:55.363481Z",
+    "modified": "2025-04-30T08:54:55.363481Z",
+    "first_observed": "2024-10-14T12:05:49.444Z",
+    "last_observed": "2024-10-14T12:05:49.444Z",
+    "number_observed": 1,
+    "objects": {
+        "0": {
+            "type": "ipv4-addr",
+            "spec_version": "2.1",
+            "id": "ipv4-addr--74741b82-e184-5fe7-bfb1-5ba5781fcd6e",
+            "value": "59.41.252.225"
+        },
+        "1": {
+            "type": "ipv4-addr",
+            "spec_version": "2.1",
+            "id": "ipv4-addr--86af5a8e-e49a-5ab4-9900-2d9e7764688e",
+            "value": "dissension.cantonfair.org.cn"
+        },
+        "2": {
+            "type": "network-traffic",
+            "spec_version": "2.1",
+            "id": "network-traffic--995fe43c-c83a-529f-97a8-d4fc272fee0b",
+            "src_ref": "ipv4-addr--74741b82-e184-5fe7-bfb1-5ba5781fcd6e",
+            "dst_ref": "ipv4-addr--86af5a8e-e49a-5ab4-9900-2d9e7764688e",
+            "src_port": 49980,
+            "dst_port": 80,
+            "protocols": [
+                "H",
+                "T",
+                "T",
+                "P"
+            ],
+            "extensions": {
+                "extension-definition--1f0b2671-5fbb-49aa-86f3-8687c5f4c7c6": {
+                    "device_type": "\u871c\u70b9",
+                    "sub_device_type": "\u5916\u871c\u70b9"
+                }
+            }
+        },
+        "3": {
+            "type": "artifact",
+            "spec_version": "2.1",
+            "id": "artifact--34ecba6a-b0e4-5a10-bddb-2c2e09e588f0",
+            "mime_type": "HTTP_GET",
+            "payload_bin": "eyJVc2VyX0FnZW50IjogIk1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjEzMS4wKSBHZWNrby8yMDEwMDEwMSBGaXJlZm94LzEzMS4wIiwgIkNvb2tpZSI6ICJXVF9GUEM9aWQ9MjZmYWNhMTljODA3MGJlMDdlZjE3Mjg5MDM5ODcyODM6bHY9MTcyODkwNDExMDg0NDpzcz0xNzI4OTAzOTg3MjgzIiwgIlhfRm9yd2FyZGVkX0ZvciI6ICI1OS40MS4yNTIuMjI1LCA1OS40MS4yNTIuMjI1IiwgIkdFVCI6ICIvYWR2ZXJ0aXNlbWVudF9maWxlcy90cmFja2luZy1hcGkuanMifQ=="
+        },
+        "4": {
+            "type": "url",
+            "spec_version": "2.1",
+            "id": "url--f12f6aaf-eb4a-5ffd-8ab4-7cfb0c9f3875",
+            "value": "/advertisement_files/tracking-api.js"
+        }
+    }
+}
+{
+    "type": "attack-pattern",
+    "spec_version": "2.1",
+    "id": "attack-pattern--dae5aa77-9b60-44d7-83b1-4167878d79b0",
+    "created": "2025-04-30T08:54:55.364985Z",
+    "modified": "2025-04-30T08:54:55.364985Z",
+    "name": "HTTP GET\u8bf7\u6c42\u8bbf\u95ee"
+}

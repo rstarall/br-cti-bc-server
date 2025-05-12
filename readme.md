@@ -3,6 +3,8 @@
 br-cti fabric接口服务
 每次安装链码重启网络之后都需要复制ordererOrganizations和peerOrganizations文件夹
 到conifg/server/目录下
+服务器路径:
+/home/dev01/go/src/github.com/hyperledger/fabric-samples/test-network/organizations
 ## 2.编译
 ```
 go build -o bc-server.exe

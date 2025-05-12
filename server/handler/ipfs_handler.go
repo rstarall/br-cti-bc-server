@@ -2,10 +2,16 @@ package handler
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/righstar2020/br-cti-bc-server/ipfs"
 	ipfsService "github.com/righstar2020/br-cti-bc-server/service"
-	"net/http"
+	"github.com/righstar2020/br-cti-bc-server/util"
 )
 
 var nodeAddrs = []string{
@@ -146,4 +152,66 @@ func DownloadFileHandler(c *gin.Context) {
 
 	// 直接返回文件内容，触发浏览器下载
 	c.Data(http.StatusOK, "application/json", content)
+}
+
+// DownloadFileToPathHandler 处理从 IPFS 下载文件到指定本地路径
+func DownloadFileToPathHandler(c *gin.Context) {
+	var params struct {
+		Hash     string `json:"hash" binding:"required"`
+		SavePath string `json:"save_path" binding:"required"`
+	}
+
+	// 尝试获取POST JSON参数
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  "参数错误",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	// 调用IPFS服务获取文件内容
+	_, content, err := ipfsService.GetIPFSServiceInstance().DownloadIPFSFile(params.Hash)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "下载IPFS文件失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	// 确保保存路径的目录存在
+	saveDir := params.SavePath
+	if !util.PathExists(saveDir) {
+		if err := os.MkdirAll(saveDir, os.ModePerm); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":  "创建保存目录失败",
+				"detail": err.Error(),
+			})
+			return
+		}
+	}
+
+	// 生成文件名（使用哈希值作为文件名）
+	fileName := params.Hash
+	if !strings.HasSuffix(fileName, ".txt") {
+		fileName += ".txt"
+	}
+
+	// 构建完整的文件路径
+	filePath := filepath.Join(params.SavePath, fileName)
+
+	// 写入文件
+	if err := ioutil.WriteFile(filePath, []byte(content), 0644); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "保存文件失败",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":   "文件下载成功",
+		"file_path": filePath,
+	})
 }

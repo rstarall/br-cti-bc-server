@@ -62,15 +62,15 @@ type CtiSummaryInfo struct {
 
 // 模型数据结构定义
 type ModelInfo struct {
-	ModelID          	string   `json:"model_id"`           // 模型ID(链上生成)
-	ModelHash        	string   `json:"model_hash"`         // 模型HASH(sha256链下生成)
-	ModelName        	string   `json:"model_name"`         // 模型名称(可为空)
-	ModelType        	int      `json:"model_type"`         // 模型类型（1-10）10是流量类型的情报
-	ModelTrafficType 	int      `json:"model_traffic_type"` // 流量情报（0：非流量、1：卫星网络、2：5G、3：SDN）
-	ModelOpenSource  	int      `json:"model_open_source"`  // 是否开源（0不开源，1开源）
-	ModelCreatorUserID  string   `json:"model_creator_user_id"`  // 创建者ID(公钥sha256)
-	ModelFeatures       []string   `json:"model_features"`          // 模型特征字段
-	ModelTags           []string `json:"model_tags"`             // 模型标签数组
+	ModelID          	string    `json:"model_id"`           // 模型ID(链上生成)
+	ModelHash        	string    `json:"model_hash"`         // 模型HASH(sha256链下生成)
+	ModelName        	string    `json:"model_name"`         // 模型名称(可为空)
+	ModelType        	int       `json:"model_type"`         // 模型类型（1-10）10是流量类型的情报
+	ModelTrafficType 	int       `json:"model_traffic_type"` // 流量情报（0：非流量、1：卫星网络、2：5G、3：SDN）
+	ModelOpenSource  	int       `json:"model_open_source"`  // 是否开源（0不开源，1开源）
+	ModelCreatorUserID  string    `json:"model_creator_user_id"`  // 创建者ID(公钥sha256)
+	ModelFeatures       []string  `json:"model_features"`          // 模型特征字段
+	ModelTags           []string  `json:"model_tags"`             // 模型标签数组
 	ModelDescription    string    `json:"model_description"`      // 模型描述
 	ModelDataSize       int       `json:"model_data_size"`        // 数据大小（B）
 	ModelDataHash       string    `json:"model_data_hash"`        // 模型数据HASH（sha256）
